@@ -11,38 +11,49 @@ using namespace std;
 
 int main()
 {
-
-    srand(time(NULL));
-    int randNum = rand() % 101;
-    int guess_count = 0;
-    bool play_again = false;
+  
+  bool play_again = true;
+  
+      while (play_again == true){
+	srand(time(NULL));
+	int randNum = rand() % 101;
+	int guess_count = 0;
       
-    cout << "Random Number: " << randNum << endl;
-    int input = 0;
+	cout << "Random Number: " << randNum << endl;
+	int input = 0;
+	char input_restart = 'n';
 
-    
-    while (input != randNum){
-      guess_count++;
-      cout << "What is your guess?" << endl;
-      cin >> input;
-      if (randNum > input){
+       while (input != randNum){
+	 guess_count++;
+	 cout << "What is your guess?" << endl;
+	 cin >> input;
+	 if (randNum > input){
 
-	cout << "Nope! Try again and guess higher." << endl;
+	 cout << "Nope! Try again and guess higher." << endl;
       }
-      else if (randNum < input){
+	 else if (randNum < input){
 
-	cout << "Nope! Try again and guess lower." << endl;
-
-      }
-      else{
-
-	cout << "You got the number! Congratulations!" << endl;
+	   cout << "Nope! Try again and guess lower." << endl;
 
       }
+	 else{
 
-      
-   
-    }
+	   cout << "You got the number! Congratulations!" << endl << "Guess count: " << guess_count << endl;
+	   cout << "Would you like to play again? (y/n)" << endl;
+	   cin >> input_restart;
+	   if (input_restart == 'y'){
+	     play_again = true;
+	     cout << "Great!" << endl;
+	   }
+
+	   if (input_restart == 'n'){
+	     play_again = false;
+	     cout << "Thanks for playing!" << endl;
+	   }
+
+	 }
+       }
+      }
     
     return 0;
 }
