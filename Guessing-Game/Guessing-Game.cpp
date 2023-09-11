@@ -19,13 +19,13 @@ int main()
 	int randNum = rand() % 101;
 	int guess_count = 0;
       
-	cout << "Random Number: " << randNum << endl;
+	//cout << "Random Number: " << randNum << endl;
 	int input = 0;
 	char input_restart = 'n';
 
        while (input != randNum){
 	 guess_count++;
-	 cout << "What is your guess?" << endl;
+	 cout << "What is your guess?" << endl << "(random number between 1 and 100)" << endl;
 	 cin >> input;
 	 if (randNum > input){
 
