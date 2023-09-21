@@ -1,0 +1,44 @@
+//Palindrome Game (Placeholder for Comments)
+
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+int main()
+{
+  int str_len = 81; //circumvent this? take as user input? | 81 due tot he automated null character addded at the end
+
+  char raw_str_input[str_len];
+  
+  cout << "Give a word/phrase to check if it's a palindrome! (Max 80 characters)" << endl;
+  cin.get(raw_str_input, 80);
+  
+  char str_preprocess[str_len];
+  char str_postprocess[str_len];
+
+  //strcpy(str_preprocess, raw_str_input); 
+
+  //cout << str_preprocess << endl << str_len;
+
+
+  int k = 0;
+  for (int i = 0, str_len = strlen(str_preprocess); i < str_len; i++){ //strlen() vs. str.size()? 
+
+    if (ispunct(str_preprocess[i]) == false && str_preprocess[i] != ' '){ //checks character is not punctation or white space (should leave alphanumerics)
+      str_postprocess[k] = tolower(str_preprocess[i]); //makes lower case
+      cout<< str_postprocess[k] << endl;
+      k++;
+      
+    }
+    
+  }
+  
+  cout << "Post Proccess Array: " << str_postprocess << endl;
+
+
+    
+  return 0;
+
+}
