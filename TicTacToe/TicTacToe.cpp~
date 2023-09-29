@@ -1,0 +1,32 @@
+//TicTacToe Game
+//Gordon Chen
+// September 29th, 2023
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+int main()
+{
+  char arr[4][4]={
+    {' ','1', '2', '3'},
+    {'a',' ', ' ', ' '},
+    {'b',' ',' '}
+  };
+
+  int i,j;
+
+  cout << "Current Array: ";
+  
+  for(i=0; i<3; i++){
+    cout << "\n";
+    for(j=0; j<3; j++){
+      cout<< "\t"<<arr[i][j];
+    }
+  }
+
+  cout << "\ni value: " << i;
+  
+  return 0;
+}
