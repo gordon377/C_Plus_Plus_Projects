@@ -1,0 +1,18 @@
+//Header Guard Protection
+#ifndef MEDIA
+#define MEDIA
+
+#inclde <iostream>
+
+using namespace std;
+
+class Media{ //Fill in later
+
+ public:
+
+ protected:
+  
+}
+
+
+#endif
