@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class Media{ //Fill in later
+class Media{
 
  public:
   Media();
