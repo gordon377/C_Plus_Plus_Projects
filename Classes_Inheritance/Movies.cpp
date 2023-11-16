@@ -25,7 +25,7 @@ Movies::Movies() : Media(){  //Collect Info
 
 }
 
-void Movies::Info(){ //Output Info
+void Movies::getInfo(){ //Output Info
 
   cout << "Title: " << title << ", Year: " << year << ", Director: " << director << ", Duration: " << duration << ", Rating: " << rating << endl;
   return;

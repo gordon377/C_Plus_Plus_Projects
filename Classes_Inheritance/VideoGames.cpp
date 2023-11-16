@@ -20,7 +20,7 @@ VideoGames::VideoGames() : Media(){ //Collect Info
   }
 }
 
-void VideoGames::Info(){ //Output Info
+void VideoGames::getInfo(){ //Output Info
 
   cout << "Title: " << title << ", Year: " << year << ", Publisher: " << publisher << ", Rating: " << rating << endl;
   return;

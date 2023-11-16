@@ -14,7 +14,7 @@ class VideoGames : public Media{
   VideoGames();
   int rating = 0;
   char publisher[80];
-  void Info();
+  void getInfo();
 };
 
 #endif

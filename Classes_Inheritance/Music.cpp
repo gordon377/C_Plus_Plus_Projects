@@ -1,6 +1,6 @@
 //Implement Music Class Methods/Functions
 
-#include "Media.h"
+#include "Music.h"
 #include <iostream>
 
 using namespace std;
@@ -22,8 +22,8 @@ Music::Music() : Media(){ //Collect Info
 
 }
 
-void Music::Info(){ //Return Info
+void Music::getInfo(){ //Return Info
 
-  cout << << "Title: " << title << ", Year: " << year << ", Artist: " << artist << ", Publisher: " << publisher << ", Duration: " << duration << endl;
+  cout << "Title: " << title << ", Year: " << year << ", Artist: " << artist << ", Publisher: " << publisher << ", Duration: " << duration << endl;
 
 }

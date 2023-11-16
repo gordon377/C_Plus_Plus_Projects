@@ -14,7 +14,7 @@ class Movies : public Media{
   int rating = 0;
   int duration = 0;
   char director[80];
-  void Info();
+  void getInfo();
 
 };
 

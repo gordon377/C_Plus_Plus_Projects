@@ -2,7 +2,7 @@
 #ifndef MEDIA
 #define MEDIA
 
-#inclde <iostream>
+#include <iostream>
 
 using namespace std;
 
@@ -11,7 +11,7 @@ class Media{
  public:
   Media();
   char* getTitle();
-  virtual void Info();
+  virtual void getInfo();
   int getYear();
 
  protected:
