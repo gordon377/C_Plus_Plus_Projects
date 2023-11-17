@@ -94,7 +94,7 @@ void ADD(vector<Media*>* database){ //Add new info
       cin.ignore(10000, '\n');
       if(strcmp(input, "t") == 0){
 	bool match = false;
-	cout << "Enter the title: " << endl;
+	cout << "Enter the title: (No spaces)" << endl;
 	cin >> input;
 	cin.clear();
 	cin.ignore(10000, '\n');
@@ -113,12 +113,12 @@ void ADD(vector<Media*>* database){ //Add new info
       }
       else if(strcmp(input, "y") == 0){
 	bool match = false;
-	cout << "Enter year: " << endl;
+	cout << "Enter year: (No spaces)" << endl;
 	cin >> input;
 	cin.clear();
 	cin.ignore(10000, '\n');
         for(vector<Media*>::iterator iter = database->begin(); iter != database->end(); ++iter){
-          if((atoi(input) == ((*iter)->getYear())) == 0){ //atoi converted string to integer
+          if(atoi(input) == ((*iter)->getYear())){ //atoi converted string to integer
             proceed = false;
             match = true;
             delete *iter;
@@ -128,11 +128,11 @@ void ADD(vector<Media*>* database){ //Add new info
         }
 
       }
+      
 	if(!match){
 	  cout << "Object requested does not exist" << endl;
 	}
-    }
-      
+      }
   }
   
 }
@@ -148,7 +148,7 @@ void ADD(vector<Media*>* database){ //Add new info
       cin.clear();
       cin.ignore(10000, '\n');
       if(strcmp(input, "t") == 0){
-        cout << "Enter the title: " << endl;
+        cout << "Enter the title: (No spaces)" << endl;
         cin >> input;
         cin.clear();
         cin.ignore(10000, '\n');
@@ -161,20 +161,20 @@ void ADD(vector<Media*>* database){ //Add new info
       }
       }
 	else if(strcmp(input, "y") == 0){
-	  cout << "Enter the year of release: " << endl;
+	  cout << "Enter the year of release: (No spaces)" << endl;
 	  cin >> input;
 	  cin.clear();
 	  cin.ignore(10000, '\n');
 	  for(vector<Media*>::iterator iter = database->begin(); iter != database->end(); ++iter){
-	    if((atoi(input) == ((*iter)->getYear())) == 0){
+	    if(atoi(input) == ((*iter)->getYear())){
 	      proceed = false;
 	      match = true;
 	      (*iter)->getInfo();
 
 	}
+	  }
       if(!match){
         cout << "Object requested does not exist" << endl;
-      }
       }
 
     

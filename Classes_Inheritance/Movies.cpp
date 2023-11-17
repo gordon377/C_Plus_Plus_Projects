@@ -1,7 +1,7 @@
 //Implement Movie Functions/Methods
 
-#include "Movies.h"
 #include <iostream>
+#include "Movies.h"
 
 using namespace std;
 
