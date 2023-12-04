@@ -1,0 +1,19 @@
+#include <iostream>
+#include <cstring>
+#include <vector>
+#include <map>
+#include "Room.h"
+
+using namespace std;
+
+//Room naming
+Room::Room(char* nameIn){
+  strcpy(name, nameIn);
+}
+
+//Room Items
+void Room::OutItems(){
+  for(vector<Item*>::iterator it = items->begin(); it != items->end(); ++it){
+    cout << "Exit  " << it->first << " to room: " << it->second->name << endl;
+  }
+}
