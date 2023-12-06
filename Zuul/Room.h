@@ -26,10 +26,6 @@ class Room{
   bool takeItem(Item* item); //Taking item from room (Room Inventory -> Player Inventory) Remove item from room inventory
   bool addItem(Item* item);
 
-  
-  //Description of room (flavor)
-  bool trapped = false; //extra condition for making rooms trapped (can lose game)
-
 protected: //Not needed in this case, but good practice
   map<char*, Room*>* exits = new map<char*, Room*>();
   vector<Item*>* items = new vector<Item*>();
