@@ -20,7 +20,7 @@ bool acquire(Room* &currentRoom, vector<Item*>* &inventory);
 bool listInventory(vector<Item*>* &inventory);
 bool drop(Room* &currentRoom, vector<Item*>* &inventory);
 bool layout(vector<Room*>* &listRooms); //WHAT IS LIST ROOMS
-void checkIfWon(Room* &currentRoom, vector<Item*>* &inventory, int rounds);
+void checkIfWon(Room* &currentRoom, vector<Item*>* &inventory, int rounds, bool &active);
 bool contains(vector<Item*>* &inventory, char* name);
 
 int main(){ //main function
@@ -40,8 +40,9 @@ int main(){ //main function
   cout << "Possible commands (case sensistive): MOVE, MAP, TAKE, DROP, INV, QUIT" << endl;
   cout << "For the MOVE command, use one of the given exit orientations" << endl;
   while(active){ //Iterating Game Manager
-    int rounds = 1;
-    checkIfWon(currentRoom, inventory, rounds);
+    int rounds = 0;
+    rounds++;
+    checkIfWon(currentRoom, inventory, rounds, active);
     cout << "Enter a command: " << endl;
     cin.clear();
     cin >> tmpInput;
@@ -60,35 +61,33 @@ int main(){ //main function
     }else{
       cout << "Invalid input, try again" << endl;
     }
-    ++rounds;
   }
   return 0;
 }
 
 //DEFINING FUNCTIONS
 
-void checkIfWon(Room* &currentRoom, vector<Item*>* &inventory, int rounds){ //Check if won + other game manager stuff
-  if(rounds == 1){
-    char* coffee = new char[101];
-    strcpy(coffee, "Coffee");
-  }
+void checkIfWon(Room* &currentRoom, vector<Item*>* &inventory, int rounds, bool &active){ //Check if won + other game manager stuff
+  char* coffee = new char[101];
+  strcpy(coffee, "Coffee");
   if(rounds > 5){
     cout << "You're feeling a bit tired, maybe some coffee would help..." << endl;
   }
   if(rounds > 10){
     cout << "All these late nights haven't been doing you any good..." << "\n" << "You fall asleep and never make it out" << endl;
     cout << "GAME OVER" << endl;
+    active = false;
     return;
   }
   char* winRoom = new char[101];
   strcpy(winRoom, "Outside");
   if(strcmp(currentRoom->getName(), winRoom) == 0){
     char* keyPart1 = new char[101];
-    strcpy(keyPart1, "Key Part #1");
+    strcpy(keyPart1, "Key_Part_1");
     char* keyPart2 = new char[101];
-    strcpy(keyPart2, "Key Part #2");
+    strcpy(keyPart2, "Key_Part_2");
     char* keyPart3 = new char[101];
-    strcpy(keyPart3, "Key Part #3");
+    strcpy(keyPart3, "Key_Part_3");
     if(contains(inventory, keyPart1) && contains(inventory, keyPart2) && contains(inventory, keyPart3)){ //Win Condition
       cout << "You finally made it outside! Fresh air never smelled so good." << endl;
       exit(0);
@@ -283,15 +282,15 @@ bool loadResources(vector<Room*>* &rooms, Room* &currentRoom){
 
   //ITEMS
   char* keyPart10 = new char[101];
-  strcpy(keyPart10, "Key Part");
+  strcpy(keyPart10, "Key_Part_1");
   Item* keyPart1 = new Item(keyPart10);
 
   char* keyPart20 = new char[101];
-  strcpy(keyPart20, "Key Part");
+  strcpy(keyPart20, "Key_Part_2");
   Item* keyPart2 = new Item(keyPart20);
 
   char* keyPart30 = new char[101];
-  strcpy(keyPart30, "Key Part");
+  strcpy(keyPart30, "Key_Part_3");
   Item* keyPart3 = new Item(keyPart30);
 
   char* coffee0 = new char[101];
