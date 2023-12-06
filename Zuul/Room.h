@@ -17,7 +17,7 @@ class Room{
   Room(char* nameIn); //Room Name
   char* getName(); //Retrieve name information
   char name[101];
-  void OutExits(); //Output Exits
+  void listExits(); //Output Exits
   map<char*, Room*>* getExits();
   void OutItems(); //Output Items
   vector<Item*>* getItems(); 

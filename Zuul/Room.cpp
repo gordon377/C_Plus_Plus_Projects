@@ -20,7 +20,7 @@ void Room::OutItems(){ //List Items
 
 bool Room:: takeItem(Item* item){ //"item" = name of item requested
   for(vector<Item*>::iterator it = items->begin(); it != items->end(); ++it){
-    if(strcmp(((*it)->getName(), item->getName()) == 0){
+    if(strcmp((*it)->getName(), item->getName()) == 0){
 	items->erase(it);
 	return true;
       }
@@ -29,7 +29,7 @@ bool Room:: takeItem(Item* item){ //"item" = name of item requested
       }
       }
   }
-}
+
 
 bool Room::addItem(Item* item){
   items->push_back(item);
@@ -38,18 +38,18 @@ bool Room::addItem(Item* item){
 
 //Room Exits
 bool Room::setExit(char* orientation, Room* toRoom){
-  exits->insert(pair<char*, Room*>(direction, toRoom));
+  exits->insert(pair<char*, Room*>(orientation, toRoom));
   return true;
 }
 
 void Room::listExits(){
-  for(map<char*. Room*>::iterator it = exits->begin(); it != exits->end(); ++it){
+  for(map<char*, Room*>::iterator it = exits->begin(); it != exits->end(); ++it){
     cout << "Exit " << it->first << " to room: " << it->second->name << endl;
   }
 }
 
 char* Room::getName(){
-  return name
+  return name;
 }
 
 vector<Item*>* Room::getItems(){

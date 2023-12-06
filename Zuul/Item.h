@@ -10,7 +10,7 @@ class Item{
  public:
   Item(char* nameIN);
   char name[101];
-  char* NameInput();
+  char* getName();
 
 };
 
