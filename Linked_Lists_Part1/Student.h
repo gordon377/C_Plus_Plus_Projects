@@ -1,5 +1,5 @@
 #ifndef STUDENT_H
-#defint STUDENT_H
+#define STUDENT_H
 
 #include <iostream>
 
@@ -7,7 +7,7 @@ using namespace std;
 
 class Student{
  public:
-  char* getFristName();
+  char* getFirstName();
   char* getLastName();
   int getID();
   float getGPA();

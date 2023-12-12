@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){ //Test the Linked List Structure/Set-Up
   Student* firstStud;
-  Studemt* secondStud;
+  Student* secondStud;
   firstStud->GPA = 4.00;
   secondStud->GPA = 4.40;
 
