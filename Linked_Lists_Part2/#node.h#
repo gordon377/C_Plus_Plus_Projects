@@ -1,19 +1,20 @@
+/* Node Structure: Pair of data, one is a student following the defined structure
+ * and the other is a pointer to the next node
+ * in the sequence (Linear Linked List)
+ */
+
+
 #ifndef NODE_H
 #define NODE_H
 #include <iostream>
 #include <cstring>
 #include "student.h"
 
-/* Node Structure: Pair of data, one is a student following the defined structure
- * and the other is a pointer to the next node
- * in the sequence (Linear Linked List)
- */
-
 class Node{
  public:
   Node(); // Default constructor
   Node(Student*); // Manual constructor to set specific students
-  ~Node(); // Destructor
+  ~Node(); // Deconstructor
 
   //Next Node functions
   void setNext(Node*); // set next node pointer
