@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstring>
-#incldue "node.h"
+#include "node.h"
 #include "student.h"
 
 Node::Node(){ // Default constructor

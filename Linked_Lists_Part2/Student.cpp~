@@ -27,14 +27,6 @@ char* Student::getLastName(){
   return lastName;
 }
 
-int Student::getID(){
-  return ID;
-}
-
-float Student::getGPA(){
-  return GPA;
-}
-
 //Print function
 void Student::printStud(){
   cout << firstName << " " << lastName << " " << ID << " " << fixed << setprecision(3) << GPA << endl;
