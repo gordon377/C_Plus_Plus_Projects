@@ -59,8 +59,7 @@ int main(){
 
 void ADD(vector <Student*> &svect) { //Adding new student with info
 
-  Student* s = new Student(); //Create new variable of student structure (new is called to keep the information for longer/on the hea\
-p)
+  Student* s = new Student(); //Create new variable of student structure (new is called to keep the information for longer on the heap)
   cout << "Enter the Student's first name: " << endl;
   cin >> s->first_name; //Same as (*s).first_name | Dots are first in C++ order of operations
   cout << "Enter the Student's last name: " << endl;
@@ -76,8 +75,7 @@ p)
 
 void PRINT(vector <Student*> &svect) { //Printing stored student data
 
-  vector<Student*>::iterator ptr = svect.begin(); //initialize iterator | (iterator returns pointers) | "ptr" (variable name) is a ptr to a specific value in the vector (in this case poi\
-nts to a specific student list ptr in the vector)
+  vector<Student*>::iterator ptr = svect.begin(); //initialize iterator | (iterator returns pointers) | "ptr" (variable name) is a ptr to a specific value in the vector (in this case points to a specific student list ptr in the vector)
   for(ptr; ptr < svect.end(); ptr++){
     cout  << "Name: " << (*ptr)->first_name << " " << (*ptr)->last_name << endl;
     cout << "ID: " << (*ptr)->id << endl;
