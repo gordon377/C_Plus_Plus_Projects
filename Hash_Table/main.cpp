@@ -6,6 +6,7 @@
 #include <cstring>
 #include <vector>
 #include <iomanip>
+#include <fstream>
 
 using namespace std;
 
@@ -15,35 +16,75 @@ struct Student { //Define Student structure
   char last_name[81];
   int id;
   float gpa;
+  Student* next;
+  Student* previous;
 
 };
 
 //function prototypes
 
-void ADD(vector <Student*> &svect);
-void PRINT(vector <Student*> &svect);
-void DELETE(vector <Student*> &svect);
+void ADD(Student** hash, Student* newStudent, int size);
+void PRINT(Student** hash, int size);
+void DELETE(Student** hash, int, ID, int size);
+bool collisionCheck(Student** hash, int size);
 
 int main(){
 
-  vector <Student*> svect; //Initialize vector of pointers in the form of the Student structure
-
   char input[20]; //Function choice input
   bool end = false; //Continue condition
+  int randID = 0;
   while(end == false){ //Loops while end == false
 
-    cout << "Type ADD, PRINT, DELETE, or QUIT (case sensitive) to interact with this student list" << endl;
+    cout << "Type ADD, ADDRANDOM, PRINT, DELETE, or QUIT (case sensitive) to interact with this student list" << endl;
     cin >> input; //Take in command
     if(strcmp(input, "ADD") == 0){  //Calling function corresponding to requested command
       ADD(svect);
     }
+    else if(strcmp(input, "ADDRANDOM") == 0{
+	int num;
+	char** FName = new char* [30];
+	char** LName = new char* [30];
+	for (int i = 0; i< 20; i++){
+	  FName[i] = new char[81];
+	  LName[i] = new char[81];
+	}
+	cout << "How many students do you want to add?" << endl;
+	cin >> num;
+	cin.clear();
+	ifstream myfile1("firstNames.txt");
+	int line = 0;
+	char first[101];
+	while (line < 20) {
+	  myfile1.getline(first, 101);
+	  strcpy(FName[line], first);
+	  line++;
+	}
+	ifstream myfile2("lastNames.txt");
+	char last[101];
+	line = 0; //Reset counter
+	while (line < 20) {
+	  myfile2.getline(last, 101);
+	  strcpy(LName[line], last);
+	  line++;
+	}
+	while (num > 0){
+	  Student* newStudent = new student();
+	  //Generate and assign random data
+	  int randFirst = rand() % 20;
+	  int randLast = rand() % 20;
+	  strcpy(newStudent->first_name, FName[randFirst]);
+	  strcpy(newStudent->last_name, LName[randLast]);
+	  newStudent->id = randID;
+	  newStudent->gpa = (float)rand()/
+	}
+      }
     else if(strcmp(input, "PRINT") == 0){
       PRINT(svect);
     }
     else if(strcmp(input, "DELETE") == 0){
       DELETE(svect);
     }
-    else if(strcmp(input, "QUIT") ==0){
+    else if(strcmp(input, "QUIT") == 0){
         end = true;
       }
     else{
