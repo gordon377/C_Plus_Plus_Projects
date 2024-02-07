@@ -33,12 +33,70 @@ int main(){
   char input[20]; //Function choice input
   bool end = false; //Continue condition
   int randID = 0;
+  srand(time(NULL));
+  randID = rand() % 1000000; //generating random ID value, up to six digits
+  Student** hash = new Student* [101]; //101 base slots for 101 potential linked lists
+  int size = 101;
+
+  cout << "Starting Variables Initialized" << endl;
+  
   while(end == false){ //Loops while end == false
 
-    cout << "Type ADD, ADDRANDOM, PRINT, DELETE, or QUIT (case sensitive) to interact with this student list" << endl;
+    cout << "Type MANUALADD, ADDRANDOM, PRINT, DELETE, or QUIT (case sensitive) to interact with this student list" << endl;
     cin >> input; //Take in command
-    if(strcmp(input, "ADD") == 0){  //Calling function corresponding to requested command
-      ADD(svect);
+    if(strcmp(input, "MANUALADD") == 0){  //Calling function corresponding to requested command
+      cout << "Inputting Student" << endl;
+      Student* newStudent = new Student();
+      newStudent->next = NULL;
+      newStudent->previous = NULL;
+      cout << "First Name: " << endl;
+      cin >> newStudent->first_name;
+      cin.clear();
+      cout << "Last Name: " << endl;
+      cin >> newStudent->last_name;
+      cin.clear();
+      cout << "ID: " << endl;
+      cin >> newStudent->id;
+      cin.clear();
+      cout << "GPA: " << endl;
+      cin >> newStudent->gpa;
+      cin.clear();
+      ADD(hash, newStudent, size);
+      cout << "DEBUG: MANUAL ADD FINISHED" << endl;
+      if(collisionCheck(hash, size)){ //Adjusting hash in case of collision
+	cout << "Collision detected, adjusting hash table" << endl;
+	Student** tempHash = new Student* [size];
+	for (int i = 0; i < size; i++){ //Copying hash data into tempHash
+	  tempHash[i] = hash[i];
+	}
+	int doubleSize = size * 2;
+	hash = new Student* [doubleSize]; //Override original hash to be empty & double size
+	for (int tempNum1 = 0; tempNum1 < doubleSize; tempNum1++){
+	  hash[tempNum1] = NULL;
+	}
+	//reload original data into newly sized list
+	for (int tempNum2 = 0; tempNum2 < doubleSize; tempNum2++){
+	  if(tempHash[tempNum2] != NULL){
+	    Student* current = tempHash[tempNum2];
+	    if(current->next != NULL){
+	      Student* newNext = current->next;
+	      current->next = NULL;
+	      newNext->previous = NULL;
+	      ADD(hash, newNext, doubleSize);
+	      if (newNext->next != NULL){
+		Student* newNextB = newNext->next;
+		newNext->next = NULL;
+		newNext2->previous = NULL;
+		ADD(hash, newNext2, newSize);
+	      }
+	    }
+	    ADD(hash, current, doubleSize);
+	  }
+	}
+	delete[] temp; //Reset rehashing system
+	size = doubleSize; //Size update
+      }
+      line--;
     }
     else if(strcmp(input, "ADDRANDOM") == 0{
 	int num;
@@ -67,25 +125,66 @@ int main(){
 	  strcpy(LName[line], last);
 	  line++;
 	}
-	while (num > 0){
-	  Student* newStudent = new student();
+	while (num > 0){ //Input Student Data into student structs
+	  Student* newStudent = new Student();
 	  //Generate and assign random data
 	  int randFirst = rand() % 20;
 	  int randLast = rand() % 20;
 	  strcpy(newStudent->first_name, FName[randFirst]);
 	  strcpy(newStudent->last_name, LName[randLast]);
 	  newStudent->id = randID;
-	  newStudent->gpa = (float)rand()/
+	  newStudent->gpa = (float)rand()/ (RAND_MAX)*5; //5.0 Scale
+	  randID = randID + 22; //Increment to induce potential collisions (COME BACK TO THIS)
+	  ADD(hash, newStudent, size); //Add student data
+	  if(collisionCheck(hash, size)){ //Adjusting hash in case of collision
+	    cout << "Collision detected, adjusting hash table" << endl;
+	    Student** tempHash = new Student* [size];
+	    for (int i = 0; i < size; i++){ //Copying hash data into tempHash
+	      tempHash[i] = hash[i];
+	    }
+	    int doubleSize = size * 2;
+	    hash = new Student* [doubleSize]; //Override original hash to be empty & double size
+	    for (int tempNum1 = 0; tempNum1 < doubleSize; tempNum1++){
+	      hash[tempNum1] = NULL;
+	    }
+	    //reload original data into newly sized list
+	    for (int tempNum2 = 0; tempNum2 < doubleSize; tempNum2++){
+	      if(tempHash[tempNum2] != NULL){
+		Student* current = tempHash[tempNum2];
+		if(current->next != NULL){
+		  Student* newNext = current->next;
+		  current->next = NULL;
+		  newNext->previous = NULL;
+		  ADD(hash, newNext, doubleSize);
+		  if (newNext->next != NULL){
+		    Student* newNextB = newNext->next;
+		    newNext->next = NULL;
+		    newNext2->previous = NULL;
+		    ADD(hash, newNext2, newSize);
+		  }
+		}
+		ADD(hash, current, doubleSize);
+	      }
+	    }
+	    delete[] temp; //Reset rehashing system
+	    size = doubleSize; //Size update
+	  }
+	  line--;
 	}
       }
     else if(strcmp(input, "PRINT") == 0){
-      PRINT(svect);
+      PRINT(hash, size);
     }
     else if(strcmp(input, "DELETE") == 0){
-      DELETE(svect);
+      cout << "ID of Student to Remove: " << endl;
+      int inputID;
+      cin >> inputID;
+      cin.clear();
+      DELETE(hash, inputID, size);
     }
     else if(strcmp(input, "QUIT") == 0){
-        end = true;
+      cout << "DEBUG: Quitting Program" << endl;
+      end = true;
       }
     else{
 
