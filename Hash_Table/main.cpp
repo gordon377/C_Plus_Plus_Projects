@@ -25,7 +25,7 @@ struct Student { //Define Student structure
 
 void ADD(Student** hash, Student* newStudent, int size);
 void PRINT(Student** hash, int size);
-void DELETE(Student** hash, int, ID, int size);
+void DELETE(Student** hash, int id, int size);
 bool collisionCheck(Student** hash, int size);
 
 int main(){
@@ -86,19 +86,18 @@ int main(){
 	      if (newNext->next != NULL){
 		Student* newNextB = newNext->next;
 		newNext->next = NULL;
-		newNext2->previous = NULL;
-		ADD(hash, newNext2, newSize);
+		newNextB->previous = NULL;
+		ADD(hash, newNextB, doubleSize);
 	      }
 	    }
 	    ADD(hash, current, doubleSize);
 	  }
 	}
-	delete[] temp; //Reset rehashing system
+	delete[] tempHash; //Reset rehashing system
 	size = doubleSize; //Size update
       }
-      line--;
     }
-    else if(strcmp(input, "ADDRANDOM") == 0{
+    else if(strcmp(input, "ADDRANDOM") == 0){
 	int num;
 	char** FName = new char* [30];
 	char** LName = new char* [30];
@@ -159,17 +158,17 @@ int main(){
 		  if (newNext->next != NULL){
 		    Student* newNextB = newNext->next;
 		    newNext->next = NULL;
-		    newNext2->previous = NULL;
-		    ADD(hash, newNext2, newSize);
+		    newNextB->previous = NULL;
+		    ADD(hash, newNextB, doubleSize);
 		  }
 		}
 		ADD(hash, current, doubleSize);
 	      }
 	    }
-	    delete[] temp; //Reset rehashing system
+	    delete[] tempHash; //Reset rehashing system
 	    size = doubleSize; //Size update
 	  }
-	  line--;
+	  num--;
 	}
       }
     else if(strcmp(input, "PRINT") == 0){
@@ -191,56 +190,96 @@ int main(){
       cout << "Invalid input (case sensisitve commands)" << endl;  //Other case
 
     }
-
+  
   }
-
   return 0;
 }
 
-void ADD(vector <Student*> &svect) { //Adding new student with info
 
-  Student* s = new Student(); //Create new variable of student structure (new is called to keep the information for longer/on the hea\
-p)
-  cout << "Enter the Student's first name: " << endl;
-  cin >> s->first_name; //Same as (*s).first_name | Dots are first in C++ order of operations
-  cout << "Enter the Student's last name: " << endl;
-  cin >> s->last_name;
-  cout << "Enter the Student's ID: " << endl; //Taking in student info
-  cin >> s->id;
-  cout << "Enter the Student's GPA: " << endl;
-  cin >> s->gpa;
-
-  svect.push_back(s); //Pushing information back to vector
-
-}
-
-void PRINT(vector <Student*> &svect) { //Printing stored student data
-
-  vector<Student*>::iterator ptr = svect.begin(); //initialize iterator | (iterator returns pointers) | "ptr" (variable name) is a ptr to a specific value in the vector (in this case poi\
-nts to a specific student list ptr in the vector)
-  for(ptr; ptr < svect.end(); ptr++){
-    cout  << "Name: " << (*ptr)->first_name << " " << (*ptr)->last_name << endl;
-    cout << "ID: " << (*ptr)->id << endl;
-    cout << "GPA: " << fixed << setprecision(2) << (*ptr)->gpa << endl; //Precisiion fixed to two decimals
-  }
-
-}
-
-void DELETE(vector <Student*> &svect) {
-
-  float id_input;
-  cout << "Enter the ID of the student to delete" << endl;
-  cin >> id_input;
-  for(vector<Student*>::iterator ptr = svect.begin(); ptr != svect.end(); ptr++){
-
-    if (id_input == (*ptr)->id){
-
-        delete *ptr; //delete student list pointer within vector
-        svect.erase(ptr); //delete iterator ptr memory
-        break; //leave loop
+  void ADD(Student** hash, Student* newStudent, int size) { //Adding new student with info
+    int element = (newStudent->id) % size;
+    //Inputting Student Data into current Hashtable
+    if (hash[element] == NULL){ //No collision case
+      hash[element] = newStudent;
+    }
+    else { //Collision case
+      if((hash[element])->next == NULL){ //No collisions here prior
+	(hash[element])->next = newStudent;
+	(hash[element]->next)->previous = (hash[element])->next; //No next?
       }
-
-  }
+      else{ //One collision here prior (unlikely to be more two collisions in one area - can be automated with loops for larger datasets)
+	((hash[element])->next)->next = newStudent;
+	(((hash[element])->next)->next)->previous = ((hash[element])->next)->next;
+      }
+    }
 }
 
+  void PRINT(Student** hash, int size) { //Printing stored student data
+    cout << "\n" << "PRINTING INITIATION" << "\n" << endl;
+    for(int i = 0; i < size; i++){
+      Student* current = hash[i];
+      if(current != NULL){
+	cout << current->first_name << " ";
+	cout << current->last_name << " ID: ";
+	cout << current->id << " GPA: ";
+	cout << fixed << setprecision(2) << current->gpa << endl;
+	Student* NXT = current->next;
+	if (NXT != NULL){
+	  cout << '\t' << NXT->first_name;
+	  cout << " " << NXT->last_name;
+	  cout << " ID: " << NXT->id;
+	  cout << " GPA: " << fixed << setprecision(2) << NXT->gpa << endl;
+	}
+      }
+    }
+    cout << "PRINTING FINISHED" << endl;
+  }
+
+  void DELETE(Student** hash, int id, int size){
+    int element = id % size;
+    if(hash[element] == NULL){
+      cout << "No student with this ID to remove" << endl;
+    }
+    else{
+      if(hash[element]->id == id){ //IDs match, delete
+	if(hash[element]->next == NULL){
+	  hash[element] = NULL;
+	}
+	else{ //Cut Student 1 & 2 while setting initial student in linked list as Student 2 (push everything towards beginning by one)
+	  Student* newCurr = hash[element]->next;
+	  newCurr->previous = NULL;
+	  hash[element] = newCurr;
+	}
+      }
+      else{ 
+	if(hash[element]->next == NULL){
+	  cout << "No student with this ID to remove" << endl;
+	}
+	else{
+	  if(hash[element]->next->id == id){ //IDs match, delete
+	    hash[element]->next = NULL;
+	  }
+	  else{
+	    cout << "No student with this ID to remove" << endl;
+	  }
+	}
+      }
+    }
+  }
+
+  bool collisionCheck(Student** hash, int size){
+    bool newHash = false; //Conditional to return | Checks if a new Hash needs to be made (in this case doubling the hashtable)
+    int element = 0;
+    while(newHash == false && element < size){
+      if(hash[element] != NULL){
+	if((hash[element])->next != NULL){
+	  if(((hash[element])->next)->next != NULL){
+	    newHash = true;
+	  }
+	}
+      }
+      element++;
+    }
+    return newHash;
+  }
 
