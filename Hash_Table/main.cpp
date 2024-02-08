@@ -32,9 +32,8 @@ int main(){
 
   char input[20]; //Function choice input
   bool end = false; //Continue condition
-  int randID = 0;
+  int ID = 0;
   srand(time(NULL));
-  randID = rand() % 1000000; //generating random ID value, up to six digits
   Student** hash = new Student* [101]; //101 base slots for 101 potential linked lists
   int size = 101;
 
@@ -101,11 +100,11 @@ int main(){
 	int num;
 	char** FName = new char* [30];
 	char** LName = new char* [30];
-	for (int i = 0; i< 20; i++){
+	for (int i = 0; i< 20; i++){ //Initialize array
 	  FName[i] = new char[81];
 	  LName[i] = new char[81];
 	}
-	cout << "How many students do you want to add?" << endl;
+	cout << "How many students do you want to add? (Maximum of 1 Million)" << endl;
 	cin >> num;
 	cin.clear();
 	ifstream myfile1("firstNames.txt");
@@ -131,9 +130,9 @@ int main(){
 	  int randLast = rand() % 20;
 	  strcpy(newStudent->first_name, FName[randFirst]);
 	  strcpy(newStudent->last_name, LName[randLast]);
-	  newStudent->id = randID;
+	  newStudent->id = ID;
+	  ID++; //Increment to induce potential collisions (COME BACK TO THIS)
 	  newStudent->gpa = (float)rand()/ (RAND_MAX)*5; //5.0 Scale
-	  randID = randID + 22; //Increment to induce potential collisions (COME BACK TO THIS)
 	  ADD(hash, newStudent, size); //Add student data
 	  if(collisionCheck(hash, size)){ //Adjusting hash in case of collision
 	    cout << "Collision detected, adjusting hash table" << endl;
@@ -147,7 +146,7 @@ int main(){
 	      hash[tempNum1] = NULL;
 	    }
 	    //reload original data into newly sized list
-	    for (int tempNum2 = 0; tempNum2 < doubleSize; tempNum2++){
+	    for (int tempNum2 = 0; tempNum2 < size; tempNum2++){
 	      if(tempHash[tempNum2] != NULL){
 		Student* current = tempHash[tempNum2];
 		if(current->next != NULL){
