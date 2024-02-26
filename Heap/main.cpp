@@ -11,19 +11,23 @@
 using namespace std;
 
 
-void SORT_INPUT(int array[101], int inputIndex); //Down to top sort
-void SORT_REMOVEROOT(int array[101], int inputIndex); //Top down sort
+void SORT_INPUT(int array[101], int inputIndex, int maxIndex); //Down to top sort
+void SORT_REMOVEROOT(int array[101], int inputIndex, int maxIndex); //Top down sort
 void PRINT(int array[101], int rootIndex, int count, int maxIndex);
 void REMOVE_ROOT(int array[101], int &maxIndex); //Removes Root and Outputs it while taking the end index value and placing at the top (root index), before sorting it again | (Instructions say to reduce table size by one, but this function will instead set the value of the right most indext or the swapped index with NULL)
 
 int main(){
   int currMax = 0;
-  char input[20];
+  char input[21]; //20 Characters + 1 Null Character
   int num = 0;
   int num2 = 0;
   int size = 100;
   bool active = true;
   int binTree[101];
+
+  for (int i = 0; i < 102; i++){
+    binTree[i] = 0;
+  }
   
   cout << "How would you like numbers to be added, manually (up to one hundred values from 1 to 1000) or with a file of 100 predetermined values?" << endl;
   cout << "Commands are as follows: MANUAL or FILE" << endl;
@@ -39,22 +43,22 @@ int main(){
       cout << "Enter number: " << endl;
       cin >> num2;
       binTree[i+1] = num2;
-      SORT_INPUT(binTree, i+1);
+      SORT_INPUT(binTree, i+1, currMax);
     }
     cin.clear();
   }
   else if(strcmp(input, "FILE") == 0){
     cin.clear();
-    currMax = 100;
-    cout << "currMax: " << currMax << endl;
-    ifstream fin("Numbers.txt");
+    ifstream fin("NumbersV2.txt");
     int tmpValue = 0;
     int index = 0;
     while(fin >> tmpValue){
       index++;
+      currMax++;
       binTree[index] = tmpValue;
-      SORT_INPUT(binTree, index);
+      SORT_INPUT(binTree, index, currMax);
     }
+    cout << "currMax: " << currMax << endl;
     cout << "DEBUG: FILE NUMBERS LOADED" << endl;
   }
   while(active){
@@ -78,7 +82,7 @@ int main(){
     int tmpMax = currMax;
 
     for(int i = 0; i < tmpMax; i++){
-      REMOVE_ROOT(binTree, currMax);\
+      REMOVE_ROOT(binTree, currMax);
       cout << ", ";
     }
     
@@ -96,11 +100,11 @@ int main(){
   return 0;
 }
 
-void SORT_INPUT(int array[101], int inputIndex){ //Note: Arrays are automatically passed by referenced due to the deferencing of square brackets, so the '&' dereferencing symbol isn't necessarily needed
+void SORT_INPUT(int array[101], int inputIndex, int maxIndex){ //Note: Arrays are automatically passed by referenced due to the deferencing of square brackets, so the '&' dereferencing symbol isn't necessarily needed
   int tempNum = 0;
   int parentIndex = floor(inputIndex/2);
 
-  while(array[inputIndex] > array[parentIndex]){
+  while((array[inputIndex] > array[parentIndex]) && inputIndex < maxIndex){
     tempNum = array[parentIndex];
     array[parentIndex] = array[inputIndex];
     array[inputIndex] = tempNum;
@@ -110,11 +114,11 @@ void SORT_INPUT(int array[101], int inputIndex){ //Note: Arrays are automaticall
   return;
 }
 
-void SORT_REMOVEROOT(int array[101], int inputIndex){
+void SORT_REMOVEROOT(int array[101], int inputIndex, int maxIndex){
   int tempNum = 0;
   int childIndex = inputIndex*2; //childIndex initialized as left child
   
-  while(array[inputIndex] < array[childIndex] || array[inputIndex] < array[childIndex+1]){
+  while((array[inputIndex] < array[childIndex] || array[inputIndex] < array[childIndex+1]) && childIndex != maxIndex){
     if(array[childIndex] >= array[childIndex+1] && array[inputIndex] < array[childIndex]){ //Slightly biased to sorting to the left side of the tree]
       tempNum = array[inputIndex];
       array[inputIndex] = array[childIndex];
@@ -136,8 +140,8 @@ void REMOVE_ROOT(int array[101], int &maxIndex){
   cout << array[1];
   array[1] = array[maxIndex];
   array[maxIndex] = -1;
+  SORT_REMOVEROOT(array, 1, maxIndex);
   maxIndex--;
-  SORT_REMOVEROOT(array, 1);
 }
 
 void PRINT(int array[101], int rootIndex, int count, int maxIndex){
