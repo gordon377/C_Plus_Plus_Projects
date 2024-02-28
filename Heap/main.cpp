@@ -76,7 +76,7 @@ int main(){
     cout << endl;
   }
   else if(strcmp(input, "REMOVEREMAININGROOTS") == 0){
-    cout << "currMax: " << currMax << endl; //CURR MAX IS SOMEHOW 0 HERE??? BUT ONLY WHEN THE BELOW LOOP IS ACTIVE/THERE???
+    cout << "currMax: " << currMax << endl; 
     cout << "Remaining roots: ";
 
     int tmpMax = currMax;
@@ -104,7 +104,7 @@ void SORT_INPUT(int array[101], int inputIndex, int maxIndex){ //Note: Arrays ar
   int tempNum = 0;
   int parentIndex = floor(inputIndex/2);
 
-  while((array[inputIndex] > array[parentIndex]) && inputIndex < maxIndex){
+  while((array[inputIndex] > array[parentIndex]) && inputIndex < maxIndex && parentIndex != 0){
     tempNum = array[parentIndex];
     array[parentIndex] = array[inputIndex];
     array[inputIndex] = tempNum;
