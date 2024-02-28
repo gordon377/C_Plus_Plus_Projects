@@ -10,11 +10,12 @@
 
 using namespace std;
 
+//Function Prototypes
 
 void SORT_INPUT(int array[101], int inputIndex, int maxIndex); //Down to top sort
 void SORT_REMOVEROOT(int array[101], int inputIndex, int maxIndex); //Top down sort
 void PRINT(int array[101], int rootIndex, int count, int maxIndex);
-void REMOVE_ROOT(int array[101], int &maxIndex); //Removes Root and Outputs it while taking the end index value and placing at the top (root index), before sorting it again | (Instructions say to reduce table size by one, but this function will instead set the value of the right most indext or the swapped index with NULL)
+void REMOVE_ROOT(int array[101], int &maxIndex); //Removes Root and Outputs it while taking the end index value and placing at the top (root index), before sorting it again | (Instructions say to reduce table size by one, but this function will instead set the value of the right most indext or the swapped index with NULL or other functioning NULL value such as -1)
 
 int main(){
   int currMax = 0;
@@ -23,11 +24,13 @@ int main(){
   int num2 = 0;
   int size = 100;
   bool active = true;
-  int binTree[101];
+  int binTree[101]; //binTree | index = 0 is not used for the sake of the mathematical multiplying by two to make this array function
 
-  for (int i = 0; i < 102; i++){
+  for (int i = 0; i < 102; i++){ //Set array values to 0 (initialize)
     binTree[i] = 0;
   }
+
+  //Commands for program
   
   cout << "How would you like numbers to be added, manually (up to one hundred values from 1 to 1000) or with a file of 100 predetermined values?" << endl;
   cout << "Commands are as follows: MANUAL or FILE" << endl;
@@ -47,7 +50,7 @@ int main(){
     }
     cin.clear();
   }
-  else if(strcmp(input, "FILE") == 0){
+  else if(strcmp(input, "FILE") == 0){ //Input by file
     cin.clear();
     ifstream fin("NumbersV2.txt");
     int tmpValue = 0;
@@ -63,7 +66,7 @@ int main(){
   }
   while(active){
     cout << "currMax: " << currMax << endl;
-  cout << "\n What would you like to do next? (PRINT, REMOVEROOT, REMOVEREMAININGROOTS, QUIT)" << endl;
+    cout << "\n What would you like to do next? (PRINT, REMOVEROOT, REMOVEREMAININGROOTS, QUIT)" << endl; // main commands
   cin >> input;
   if(strcmp(input, "PRINT") == 0){
     PRINT(binTree, 1, 0, currMax);
@@ -83,7 +86,7 @@ int main(){
 
     for(int i = 0; i < tmpMax; i++){
       REMOVE_ROOT(binTree, currMax);
-      cout << ", ";
+      cout << " ";
     }
     
     REMOVE_ROOT(binTree, currMax);
@@ -100,11 +103,11 @@ int main(){
   return 0;
 }
 
-void SORT_INPUT(int array[101], int inputIndex, int maxIndex){ //Note: Arrays are automatically passed by referenced due to the deferencing of square brackets, so the '&' dereferencing symbol isn't necessarily needed
+void SORT_INPUT(int array[101], int inputIndex, int maxIndex){ //Sorting input values (top down) | Note: Arrays are automatically passed by referenced due to the deferencing of square brackets, so the '&' dereferencing symbol isn't necessarily needed
   int tempNum = 0;
   int parentIndex = floor(inputIndex/2);
 
-  while((array[inputIndex] > array[parentIndex]) && inputIndex < maxIndex && parentIndex != 0){
+  while((array[inputIndex] > array[parentIndex]) && inputIndex <= maxIndex && parentIndex != 0){
     tempNum = array[parentIndex];
     array[parentIndex] = array[inputIndex];
     array[inputIndex] = tempNum;
@@ -114,7 +117,7 @@ void SORT_INPUT(int array[101], int inputIndex, int maxIndex){ //Note: Arrays ar
   return;
 }
 
-void SORT_REMOVEROOT(int array[101], int inputIndex, int maxIndex){
+void SORT_REMOVEROOT(int array[101], int inputIndex, int maxIndex){ //Down up sort (opposite of SORT_INPUT) | Checks which side has the higher number to put into the rootIndex 
   int tempNum = 0;
   int childIndex = inputIndex*2; //childIndex initialized as left child
   
@@ -126,7 +129,7 @@ void SORT_REMOVEROOT(int array[101], int inputIndex, int maxIndex){
       inputIndex = childIndex;
       childIndex = inputIndex*2;
     }
-    else if(array[childIndex] <= array[childIndex+1] && array[inputIndex] < array[childIndex+1]){
+    else if(array[childIndex] <= array[childIndex+1] && array[inputIndex] < array[childIndex+1]){ //Sort to right
       tempNum = array[inputIndex];
       array[inputIndex] = array[childIndex+1];
       array[childIndex+1] = tempNum;
@@ -136,23 +139,25 @@ void SORT_REMOVEROOT(int array[101], int inputIndex, int maxIndex){
   }
 }
 
-void REMOVE_ROOT(int array[101], int &maxIndex){
+void REMOVE_ROOT(int array[101], int &maxIndex){ //Output root value, swap maxIndex value into root index, and resort
+  if(array[1] != -1){ 
   cout << array[1];
   array[1] = array[maxIndex];
   array[maxIndex] = -1;
   SORT_REMOVEROOT(array, 1, maxIndex);
   maxIndex--;
+  }
 }
 
-void PRINT(int array[101], int rootIndex, int count, int maxIndex){
-  if((rootIndex*2)+1<maxIndex){
+void PRINT(int array[101], int rootIndex, int count, int maxIndex){ //Visually print out binTree sideways using tabs
+  if((rootIndex*2)+1<maxIndex){ //Check Right
     PRINT(array, ((rootIndex*2)+1), count+1, maxIndex);
   }
-  for(int i = 0; i < count; i++){
+  for(int i = 0; i < count; i++){ //Tabs for tree level
     cout << '\t';
   }
   cout << array[rootIndex] << endl;
-  if((rootIndex*2)<maxIndex){
+  if((rootIndex*2)<maxIndex){ //Check left
     PRINT(array, (rootIndex*2), count+1, maxIndex);
   }
   return;
