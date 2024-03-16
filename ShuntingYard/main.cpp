@@ -128,24 +128,50 @@ int main(){
       }
       shuntCount++;; 
     }
-    if (shuntCount == inputLength_ {
+    if (shuntCount == inputLength) {
       while(top != NULL){
         enqueue(front, back, top->returnValue());
         pop(top;
       }
     }
     cout << “Expression Tree: “ << endl;
+    printQueue(front, back);
+    cout << endl << “Total number of elements: “ << inputLength << endl;
+    Node* tree = NULL; //Tree stack top
+    while(front != back) { //Convert from queue to tree stack
+      Node* tempNode = new Node();
+      tempNode->makeValue(front->returnValue());
+      treePush(tree, tempNode);
+      front = front->returnNext();
+    }
+    //Same but from opposite side
+    Node* tempNode = new Node();
+    tempNode->makeValue(back->returnValue());
+    treePush(tree, tempNode);
+
+    //Printing from Expression Tree
+    cout << “Three types of notation: Infix, Prefix, and Postfix” << endl;
+    cout << “Commands: INFIX, PREFIX, POSTFIX” << endl;
+    char printCommand [50]; 
+    cin.get(printCommand, 50);
+    cin.ignore(9999, ‘\n’);
+    if (strcmp(printCommand, “PREFIX”) == 0) { //Prefix Print
+      printPrefix(tree);
+    }
+    else if (strcmp(printCommand, “POSTFIX”) == 0) { //Postfix Print
+      printPostfix(tree);
+    }
+    else if (strcmp(printCommand, “INFIX”) == 0) { //Infix Print
+      printInfix(tree);
+    }
+    else{
+      cout << “Invalid Input. RESTART” << endl;
+    }
 
   }
 
-
-
-
-
-  
-
   return 0;
-} //main function end
+}//main function end
 
 //Function Definitions
 
