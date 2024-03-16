@@ -10,18 +10,18 @@ class Node {
 
   Node* returnRight();
   Node* returnLeft();
-  char* returnData();
+  char* returnValue();
   Node* returnNext();
 
   void makeRight(Node*);
   void makeLeft(Node*);
-  void makeData(Node*);
+  void makeValue(Node*);
   void makeNext(char*);
 
  private:
   Node* right;
   Node* left;
-  char* data;
+  char* value;
   Node* next;
 
   
