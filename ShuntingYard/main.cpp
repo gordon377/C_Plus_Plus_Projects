@@ -51,11 +51,11 @@ int main(){
     top = NULL;
     front = NULL;
     back = NULL;
-    for (int i = 0; i< strlen(input); i++){
-      if(inputValue[i] == ‘ ‘){ //If space
+    for (int i = 0; i< strlen(inputValue); i++){
+      if(inputValue[i] == ' '){ //If space
 	if(charCount == 1){
 	  char* tempChar = new char[15];
-	  for(int num = 0; num < sizeof(temp); num++){
+	  for(int num = 0; num < sizeof(tempChar); num++){
 	    tempChar[num] = 0;
           }
 	  tempChar[0] = inputValue[i -1];
@@ -96,13 +96,13 @@ int main(){
       cout << extraTemp[num] << "Order: " << order(extraTemp[num]) << endl;
     }
     int shuntCount = 0; //Tracks the current element
-    while (shuntCount < inputCount){ //Shunting Yard Algorithm
+    while (shuntCount < inputLength){ //Shunting Yard Algorithm
       if(order(extraTemp[shuntCount]) == 0){ //If input element is a num
 	enqueue(front, back, extraTemp[shuntCount]);
       }
       if (order(extraTemp[shuntCount]) == 3 || order(extraTemp[shuntCount]) == 2 || order(extraTemp[shuntCount]) == 1){ //If input element is an operator
 	if (top != NULL) {
-	  while (order(top->returnValue()) >= order(extraTemp[shuntCount])) && *top->returnValue() != ‘(‘){ //pop stack & enqueue
+	  while (order(top->returnValue()) >= order(extraTemp[shuntCount]) && *top->returnValue() != '('){ //pop stack & enqueue
 	      enqueue(front, back, top->returnValue());
 	      pop(top);
 	      if(top == NULL){
@@ -116,11 +116,11 @@ int main(){
 	  push(top, extraTemp[shuntCount]); //Transfer to stack
 	}
       if (*extraTemp[shuntCount] == ')') { //If value is right parenthesis
-	while (*top->returnData() != '(') {
+	while (*top->returnValue() != '(') {
 	  enqueue(front, back, top->returnValue());
 	  pop(top);
 	}
-	if (*top->returnData() == '('){
+	if (*top->returnValue() == '('){
 	  pop(top);
 	}
       }
@@ -152,7 +152,7 @@ int main(){
     cout << "Commands: INFIX, PREFIX, POSTFIX" << endl;
     char printCommand [50];
     cin.get(printCommand, 50);
-    cin.ignore(9999, ‘\n’);
+    cin.ignore(9999, '\n');
     if (strcmp(printCommand, "PREFIX") == 0) { //Prefix Print
       printPrefix(tree);
     }
@@ -175,7 +175,7 @@ int main(){
 
 //Stack Function Definitions
 
-void push(node*& top, char* inputVal){ //Adds new value to top of stack
+void push(Node*& top, char* inputVal){ //Adds new value to top of stack
   Node* tempNode = new Node();
   tempNode->makeValue(inputVal);
   tempNode->makeNext(top);
@@ -184,10 +184,9 @@ void push(node*& top, char* inputVal){ //Adds new value to top of stack
 
 void pop(Node*& top){ //Outputs & Removes the top element
   if (top == NULL){
-    cout << “NULL Stack” << endl;
+    cout << "NULL Stack" << endl;
   }
   else {
-    cout << top->returnValue << endl;
     Node* tempNode = top; 
     top  = top->returnNext();
     tempNode->makeNext(NULL); //Precautions for tempNode
@@ -196,7 +195,7 @@ void pop(Node*& top){ //Outputs & Removes the top element
 
 Node* peek(Node* top){ //Only outputs top element (For debugging purposes)
   if(top == NULL){
-    cout << “NULL Stack” << endl;
+    cout << "NULL Stack" << endl;
     Node* nullPlaceholder = new Node();
   return nullPlaceholder;
   }
@@ -208,16 +207,16 @@ Node* peek(Node* top){ //Only outputs top element (For debugging purposes)
 //Order Function Definition (Order of Operations)
 //Higher return value = Higher priority in order
 int order(char* o){
-  if(*o == ‘+’ || *o == ‘-’){
+  if(*o == '+' || *o == '-'){
     return 1;
   }
-  else if(*o == ‘*’ || *o == ‘/’){
+  else if(*o == '*' || *o == '/'){
     return 2;
   }
-  else if(*o == ‘^’){ //No root functionality added
+  else if(*o == '^'){ //No root functionality added
     return 3;
   }
-  else if(*o == ‘(’ || *o == ‘)’){ //Highest Priority (Parenthesis | Returned number must be highest)
+  else if(*o == '(' || *o == ')'){ //Highest Priority (Parenthesis | Returned number must be highest)
     return 10;
   }
   else { //Character must be a pure number
@@ -229,12 +228,12 @@ int order(char* o){
 
 void printQueue(Node* front, Node* back) {
   if(queueEmpty(front, back)){
-     cout << “NULL Queue” << endl;
+     cout << "NULL Queue" << endl;
   }
   else {
     Node* tempNode = front;
     while(tempNode != NULL){
-      cout << tempNode->returnValue() << “ “;
+      cout << tempNode->returnValue() << " ";
       tempNode = tempNode->returnNext();
     }
     cout << endl;
@@ -243,7 +242,7 @@ void printQueue(Node* front, Node* back) {
 
 void outFront(Node* front, Node* back){
   if(queueEmpty(front, back)){
-     cout << “NULL Queue” << endl;
+     cout << "NULL Queue" << endl;
   }
   else {
     cout << front->returnValue();
@@ -275,7 +274,7 @@ void enqueue(Node*& front, Node*& back, char* inputVal){ //Add value to end of q
 
 void dequeue(Node*& front, Node*& back){ //Output & Remove Element at Front of Queue
   if(queueEmpty(front, back)){
-    cout << “NULL Queue” << endl;
+    cout << "NULL Queue" << endl;
   }
   else if (front == back) { //One node case
     back == NULL;
@@ -285,7 +284,7 @@ void dequeue(Node*& front, Node*& back){ //Output & Remove Element at Front of Q
   else{
     Node* tempNode = front;
     front = front->returnNext();
-    temp->makeNext(NULL);
+    tempNode->makeNext(NULL);
   }
 }
 
@@ -293,7 +292,7 @@ void dequeue(Node*& front, Node*& back){ //Output & Remove Element at Front of Q
 
 void treePop(Node*& tree){
   if(tree == NULL){ //Check if tree is empty
-    cout << “NULL Tree” << endl;
+    cout << "NULL Tree" << endl;
   }
   else{
     Node* tempNode = tree;
@@ -308,7 +307,7 @@ void treePush(Node*& tree, Node*& placeholder){
     tree = placeholder;
   }
   else {
-    if (order(placeholder->returnValue()) == 0) { //If a raw number\
+    if (order(placeholder->returnValue()) == 0) { //If a raw number
       placeholder->makeNext(tree);
       tree = placeholder;
     }
@@ -332,13 +331,13 @@ void printPostfix(Node* PostfixExp){
   if(PostfixExp != NULL){ //Print Expression in Postfix Notation from Expression Tree
     printPostfix(PostfixExp->returnLeft());
     printPostfix(PostfixExp->returnRight());
-    cout << PostFixExp->returnValue() << “ “;
+    cout << PostfixExp->returnValue() << " ";
   }
 }
 
 void printPrefix(Node* PrefixExp){ //Print Expression in Prefix Notation from Expression Tree
   if(PrefixExp != NULL) {
-    cout << PrefixExp->returnValue() << “ “;
+    cout << PrefixExp->returnValue() << " ";
     printPrefix(PrefixExp->returnLeft());
     printPrefix(PrefixExp->returnRight());
   }
@@ -347,13 +346,13 @@ void printPrefix(Node* PrefixExp){ //Print Expression in Prefix Notation from Ex
 void printInfix(Node* InfixExp){ //Print Expression in Infix Notation from Expression Tree
   if(InfixExp != NULL) {
     if(order(InfixExp->returnValue()) != 0){ //If an operator
-      cout << “( “;
+      cout << "( ";
     }
     printInfix(InfixExp->returnLeft());
-    cout << InfixExp->returnValue() << “ “;
+    cout << InfixExp->returnValue() << " ";
     printInfix(InfixExp->returnRight());
     if (order(InfixExp->returnValue()) != 0){ //If an operator
-      cout << “) “;
+      cout << ") ";
     }
   }
 }

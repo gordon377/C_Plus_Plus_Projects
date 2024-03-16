@@ -15,8 +15,8 @@ class Node {
 
   void makeRight(Node*);
   void makeLeft(Node*);
-  void makeValue(Node*);
-  void makeNext(char*);
+  void makeValue(char*);
+  void makeNext(Node*);
 
  private:
   Node* right;
