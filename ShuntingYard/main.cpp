@@ -1,5 +1,5 @@
 #include <iostream>
-#incluyde <cstring>
+#include <cstring>
 #include "node.h"
 
 using namespace std;
@@ -16,7 +16,7 @@ void pop(Node*& top); //Return & Remove top node
 Node* peek(Node* top); //Return top node only
 
 //Queue Prototypes
-void enqueue(Node*& front, Node*& back, char* inputVal); //Add new value to back of queue 
+void enqueue(Node*& front, Node*& back, char* inputVal); //Add new value to back of queue
 void dequeue(Node*& front, Node*& back); //Output & Remove Value at front of the queue
 bool queueEmpty(Node* front, Node* back); //Check if queue is empty
 void printQueue(Node* front, Node* back); //Print out queue for debugging
@@ -40,7 +40,6 @@ int main(){
   Node* back = NULL; //Back aka Rear node of QUEUE
 
   cout << "DEBUG: Variables loaded | Shunting Yard Started" << endl;
-
   while(active){
     cout << "This is a calculator. Please input the expression to calculate in infix notation (Spaces between each number and operator)" << endl;
     cin.get(inputValue, 101);
@@ -54,89 +53,88 @@ int main(){
     back = NULL;
     for (int i = 0; i< strlen(input); i++){
       if(inputValue[i] == ‘ ‘){ //If space
-        if(charCount == 1){
-          char* tempChar = new char[15];
-          for(int num = 0; num < sizeof(temp); num++){
-            tempChar[num] = 0;
+	if(charCount == 1){
+	  char* tempChar = new char[15];
+	  for(int num = 0; num < sizeof(temp); num++){
+	    tempChar[num] = 0;
           }
-          tempChar[0] = inputValue[i -1];
-          extraTemp[inputLength] = tempChar;
-          inputLength++;
-          charCount = 0;
-        }
-        else{
-          char* tempChar = new char[15];
-          for(int num = 0; num < sizeof(tempChar); num++){
-            tempChar[num] = 0;
-          }
-          for (int num = 0; num < 1; num++){
-            tempChar[num] = inputValue[i + num - 1];
-          }
-          extraTemp[inputLength] = tempChar;
-          inputLength++;
-          charCount = 0;
-        }
+	  tempChar[0] = inputValue[i -1];
+	  extraTemp[inputLength] = tempChar;
+	  inputLength++;
+	  charCount = 0;
+	}
+	else{
+	  char* tempChar = new char[15];
+	  for(int num = 0; num < sizeof(tempChar); num++){
+	    tempChar[num] = 0;
+	  }
+	  for (int num = 0; num < 1; num++){
+	    tempChar[num] = inputValue[i + num - 1];
+	  }
+	  extraTemp[inputLength] = tempChar;
+	  inputLength++;
+	  charCount = 0;
+	}
       }
       else{
-        char* tempChar = new char[15];
-        for (int num = 0; num < sizeof(tempChar); num++){
-          tempChar[num] = 0;
-        }
-        charCount++;
-        if(i == strlen(inputValue) -1){
-          for (int num = 0; num < 1; num++){
-            tempChar[num] = inputValue[i+num+charCount+1];
-          }
-          extraTemp[inputLength] = tempChar;
-          inputLength++;
-        }
+	char* tempChar = new char[15];
+	for (int num = 0; num < sizeof(tempChar); num++){
+	  tempChar[num] = 0;
+	}
+	charCount++;
+	if(i == strlen(inputValue) -1){
+	  for (int num = 0; num < 1; num++){
+	    tempChar[num] = inputValue[i+num+charCount+1];
+	  }
+	  extraTemp[inputLength] = tempChar;
+	  inputLength++;
+	}
       }
     }
-    cout << “Expression Inputted: “ << endl;
+    cout << "Expression Inputted: " << endl;
     for (int num = 0; num < inputLength; num++){
-      cout << extraTemp[num] << “Order: “ << order(extraTemp[num]) << endl;
+      cout << extraTemp[num] << "Order: " << order(extraTemp[num]) << endl;
     }
     int shuntCount = 0; //Tracks the current element
     while (shuntCount < inputCount){ //Shunting Yard Algorithm
       if(order(extraTemp[shuntCount]) == 0){ //If input element is a num
-        enqueue(front, back, extraTemp[shuntCount]);
+	enqueue(front, back, extraTemp[shuntCount]);
       }
       if (order(extraTemp[shuntCount]) == 3 || order(extraTemp[shuntCount]) == 2 || order(extraTemp[shuntCount]) == 1){ //If input element is an operator
-        if (top != NULL) {
-          while (order(top->returnValue()) >= order(extraTemp[shuntCount]) && *top->returnValue() != ‘(‘){
-            //pop stack & enqueue
-            enqueue(front, back, top->returnValue());
-            pop(top);
-            if(top == NULL){
-              break;
-            }
-          }
-        }
-        push(top, extraTemp[shuntCount]); //Transfer to stack
+	if (top != NULL) {
+	  while (order(top->returnValue()) >= order(extraTemp[shuntCount])) && *top->returnValue() != ‘(‘){ //pop stack & enqueue
+	      enqueue(front, back, top->returnValue());
+	      pop(top);
+	      if(top == NULL){
+		break;
+	      }
+	    }
+	}
+	push(top, extraTemp[shuntCount]); //Transfer to stack
       }
-      if (*extraTemp[shuntCount] == ‘(‘){ //If value is left parenthesis
-        push(top, extraTemp[shuntCount]); //Transfer to stack
+      if (*extraTemp[shuntCount] == '('){ //If value is left parenthesis
+	  push(top, extraTemp[shuntCount]); //Transfer to stack
+	}
+      if (*extraTemp[shuntCount] == ')') { //If value is right parenthesis
+	while (*top->returnData() != '(') {
+	  enqueue(front, back, top->returnValue());
+	  pop(top);
+	}
+	if (*top->returnData() == '('){
+	  pop(top);
+	}
       }
-      if (*extraTemp[shuntCount] == ‘)’) { //If value is right parenthesis
-        while (*top->returnData() != ‘(‘) {
-          enqueue(front, back, top->returnValue());
-          pop(top);
-        }
-        if (*top->returnData() == ‘(‘){
-          pop(top);
-        }
-      }
-      shuntCount++;; 
+      shuntCount++;;
     }
     if (shuntCount == inputLength) {
       while(top != NULL){
-        enqueue(front, back, top->returnValue());
-        pop(top;
+	enqueue(front, back, top->returnValue());
+	pop(top);
       }
     }
-    cout << “Expression Tree: “ << endl;
+    cout << "Expression Tree: " << endl;
     printQueue(front, back);
-    cout << endl << “Total number of elements: “ << inputLength << endl;
+    cout << endl << "Total number of elements: " << inputLength << endl;
     Node* tree = NULL; //Tree stack top
     while(front != back) { //Convert from queue to tree stack
       Node* tempNode = new Node();
@@ -150,22 +148,22 @@ int main(){
     treePush(tree, tempNode);
 
     //Printing from Expression Tree
-    cout << “Three types of notation: Infix, Prefix, and Postfix” << endl;
-    cout << “Commands: INFIX, PREFIX, POSTFIX” << endl;
-    char printCommand [50]; 
+    cout << "Three types of notation: Infix, Prefix, and Postfix" << endl;
+    cout << "Commands: INFIX, PREFIX, POSTFIX" << endl;
+    char printCommand [50];
     cin.get(printCommand, 50);
     cin.ignore(9999, ‘\n’);
-    if (strcmp(printCommand, “PREFIX”) == 0) { //Prefix Print
+    if (strcmp(printCommand, "PREFIX") == 0) { //Prefix Print
       printPrefix(tree);
     }
-    else if (strcmp(printCommand, “POSTFIX”) == 0) { //Postfix Print
+    else if (strcmp(printCommand, "POSTFIX") == 0) { //Postfix Print
       printPostfix(tree);
     }
-    else if (strcmp(printCommand, “INFIX”) == 0) { //Infix Print
+    else if (strcmp(printCommand, "INFIX") == 0) { //Infix Print
       printInfix(tree);
     }
     else{
-      cout << “Invalid Input. RESTART” << endl;
+      cout << "Invalid Input. RESTART" << endl;
     }
 
   }
