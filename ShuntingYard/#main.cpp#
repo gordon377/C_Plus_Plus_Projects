@@ -41,9 +41,8 @@ int main(){
 
   cout << "DEBUG: Variables loaded | Shunting Yard Started" << endl;
   while(active){
-    cout << "\n This is a calculator. Please input the expression to calculate in infix notation (Spaces after each number and operator)" << endl;
+    cout << "\n This is a calculator. Please input the expression to calculate in infix notation (Spaces between each number and operator)" << endl;
     cin.get(inputValue, 101);
-    cin.clear();
     cin.ignore(9999, '\n');
     char** extraTemp = new char* [100];
     //Set initial values for Everything
@@ -59,7 +58,7 @@ int main(){
 	  for(int num = 0; num < sizeof(tempChar); num++){
 	    tempChar[num] = 0;
           }
-	  tempChar[0] = inputValue[i - 1];
+	  tempChar[0] = inputValue[i -1];
 	  extraTemp[inputLength] = tempChar;
 	  inputLength++;
 	  charCount = 0;
@@ -218,7 +217,7 @@ int order(char* o){
     return 3;
   }
   else if(*o == '(' || *o == ')'){ //Highest Priority (Parenthesis | Returned number must be highest)
-    return 9;
+    return 10;
   }
   else { //Character must be a pure number
     return 0;
