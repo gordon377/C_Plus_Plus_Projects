@@ -45,7 +45,104 @@ int main(){
     cout << "This is a calculator. Please input the expression to calculate in infix notation (Spaces between each number and operator)" << endl;
     cin.get(inputValue, 101);
     cin.ignore(9999, '\n');
+    char** extraTemp = new char* [100];
+    //Set initial values for Everything
+    int charCount = 0; //Chars before a space
+    int inputLength = 0; //Number of chars pointers in extraTemp
+    top = NULL;
+    front = NULL;
+    back = NULL;
+    for (int i = 0; i< strlen(input); i++){
+      if(inputValue[i] == ‘ ‘){ //If space
+        if(charCount == 1){
+          char* tempChar = new char[15];
+          for(int num = 0; num < sizeof(temp); num++){
+            tempChar[num] = 0;
+          }
+          tempChar[0] = inputValue[i -1];
+          extraTemp[inputLength] = tempChar;
+          inputLength++;
+          charCount = 0;
+        }
+        else{
+          char* tempChar = new char[15];
+          for(int num = 0; num < sizeof(tempChar); num++){
+            tempChar[num] = 0;
+          }
+          for (int num = 0; num < 1; num++){
+            tempChar[num] = inputValue[i + num - 1];
+          }
+          extraTemp[inputLength] = tempChar;
+          inputLength++;
+          charCount = 0;
+        }
+      }
+      else{
+        char* tempChar = new char[15];
+        for (int num = 0; num < sizeof(tempChar); num++){
+          tempChar[num] = 0;
+        }
+        charCount++;
+        if(i == strlen(inputValue) -1){
+          for (int num = 0; num < 1; num++){
+            tempChar[num] = inputValue[i+num+charCount+1];
+          }
+          extraTemp[inputLength] = tempChar;
+          inputLength++;
+        }
+      }
+    }
+    cout << “Expression Inputted: “ << endl;
+    for (int num = 0; num < inputLength; num++){
+      cout << extraTemp[num] << “Order: “ << order(extraTemp[num]) << endl;
+    }
+    int shuntCount = 0; //Tracks the current element
+    while (shuntCount < inputCount){ //Shunting Yard Algorithm
+      if(order(extraTemp[shuntCount]) == 0){ //If input element is a num
+        enqueue(front, back, extraTemp[shuntCount]);
+      }
+      if (order(extraTemp[shuntCount]) == 3 || order(extraTemp[shuntCount]) == 2 || order(extraTemp[shuntCount]) == 1){ //If input element is an operator
+        if (top != NULL) {
+          while (order(top->returnValue()) >= order(extraTemp[shuntCount]) && *top->returnValue() != ‘(‘){
+            //pop stack & enqueue
+            enqueue(front, back, top->returnValue());
+            pop(top);
+            if(top == NULL){
+              break;
+            }
+          }
+        }
+        push(top, extraTemp[shuntCount]); //Transfer to stack
+      }
+      if (*extraTemp[shuntCount] == ‘(‘){ //If value is left parenthesis
+        push(top, extraTemp[shuntCount]); //Transfer to stack
+      }
+      if (*extraTemp[shuntCount] == ‘)’) { //If value is right parenthesis
+        while (*top->returnData() != ‘(‘) {
+          enqueue(front, back, top->returnValue());
+          pop(top);
+        }
+        if (*top->returnData() == ‘(‘){
+          pop(top);
+        }
+      }
+      shuntCount++;; 
+    }
+    if (shuntCount == inputLength_ {
+      while(top != NULL){
+        enqueue(front, back, top->returnValue());
+        pop(top;
+      }
+    }
+    cout << “Expression Tree: “ << endl;
+
   }
+
+
+
+
+
+  
 
   return 0;
 } //main function end
