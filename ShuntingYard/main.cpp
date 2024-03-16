@@ -1,3 +1,18 @@
+//Gordon Chen
+//Resources Used:
+
+//https://raj457036.github.io/Simple-Tools/prefixAndPostfixConvertor.html
+//https://en.wikipedia.org/wiki/Polish_notation
+//https://www.web4college.com/converters/infix-to-postfix-prefix.php
+//https://en.wikipedia.org/wiki/Shunting_yard_algorithm
+//https://web.stanford.edu/~cgregg/ssea/lectures/04-stack-queue/slides#:~:text=A%20stack%20is%20an%20abstract,but%20don't%20remove%20it
+//https://en.wikipedia.org/wiki/Binary_expression_tree
+//http://web.cecs.pdx.edu/~karlaf/cs163_winter2012c_002.htm
+
+// Additionally Referenced Roger Li, Nathan Zou, & Akhil Baidya's Githubs
+
+
+
 #include <iostream>
 #include <cstring>
 #include "node.h"
