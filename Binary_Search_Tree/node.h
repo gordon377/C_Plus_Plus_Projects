@@ -9,13 +9,18 @@ class Node {
   ~Node();
 
   int returnValue();
+  Node* returnLeft();
+  Node* returnRight();
 
   void makeRight(Node*);
   void makeLeft(Node*);
+  void makeValue(int);
   
 
  private:
   int value;
+  Node* right;
+  Node* left;
 
 
 };
