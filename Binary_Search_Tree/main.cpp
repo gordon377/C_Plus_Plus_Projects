@@ -214,21 +214,21 @@ void REMOVENUM(Node* currNode, int inputNum){ //Essentially SEARCH() with a remo
 	  Node* tempNode = new Node();
 	  tempNode = currNode->returnRight()->returnRight();
 	  Node* tempReplacementNode = new Node();
-	  while(nullFound == false){ //Iterate until reach a left most NULL from deleted position | temp node becomes the parent of the left most non-Null Node
-	    if(tempNode->returnLeft()->returnLeft() == NULL){
+	  Node* beforeTemp = new Node();
+	  while(nullFound == false){ //Iterate until reach a left most NULL from deleted position but shifted once to the right | temp node becomes the left most non-Null Node
+	    if(tempNode->returnLeft() == NULL){
 	      nullFound = true;
 	    }
 	    else{
+	      beforeTemp = tempNode;
 	      tempNode = tempNode->returnLeft();
 	      }
 	  }
 	  //Reordering/Restructuring tree | Replacing deleted position with node of right once left all the way
-	  tempReplacementNode = tempNode->returnLeft();
-	  tempReplacementNode->makeRight(currNode->returnRight()->returnRight());
-	  tempReplacementNode->makeLeft(currNode->returnRight()->returnLeft());
-	  tempNode->makeLeft(NULL);
-	  delete currNode->returnRight();
-	  currNode->makeRight(tempReplacementNode);
+	  currNode->returnRight()->makeValue(tempNode->returnValue());
+	  beforeTemp->makeLeft(tempNode->returnRight());
+	  delete tempNode;
+	  break;
 	}
       }
       else{ //Iterate right (input > currNode Value case)
@@ -259,7 +259,7 @@ void REMOVENUM(Node* currNode, int inputNum){ //Essentially SEARCH() with a remo
 	  tempNode = currNode->returnLeft()->returnRight();
 	  Node* tempReplacementNode = new Node();
 	  Node* beforeTemp = new Node();
-	  while(nullFound == false){ //Iterate until reach left most NULL from deleted position | temp node becomes the parent of the left most non-Null Node
+	  while(nullFound == false){ //Iterate until reach left most NULL from deleted position but shifted once to the right | temp node becomes the left most non-Null Node
 	    if(tempNode->returnLeft() == NULL){
 	      nullFound = true;
 	    }
@@ -268,10 +268,11 @@ void REMOVENUM(Node* currNode, int inputNum){ //Essentially SEARCH() with a remo
 	      tempNode = tempNode->returnLeft();
 	      }
 	  }
-	  //Reordering/Restructuring tree | Replacing deleted position with node of right once left all the way
+	  //Reordering/Restructuring tree | Replacing deleted position node value with value of node of right once left all the way, then doing some clean-up connection work
 	  currNode->returnLeft()->makeValue(tempNode->returnValue());
 	  beforeTemp->makeLeft(tempNode->returnRight());
 	  delete tempNode;
+	  break;
 	  }
 	}
       else{ //Iterate left (input < currNode Value case)
