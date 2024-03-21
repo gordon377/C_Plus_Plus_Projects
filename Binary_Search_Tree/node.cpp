@@ -7,7 +7,7 @@ using namespace std;
 Node::Node() {
   left = NULL;
   right = NULL;
-  value = NULL;
+  value = 0;
 }
 
 Node::~Node(){
