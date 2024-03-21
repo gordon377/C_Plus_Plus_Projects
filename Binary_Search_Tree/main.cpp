@@ -14,7 +14,7 @@ using namespace std;
 void SORT_INPUT(Node* inputNode, Node* currNode); //Input Value into tree properly (with respect to the root value)
 void PRINT(Node* currNode, int count);
 void REMOVENUM(Node* currNode, int inputNum); //To remove a nodes of a certain num
-void ADDNUM(int inputNum, Node* root);
+void ADDNUM(Node* inputNum, Node* root);
 void SEARCH(Node* currNode, int inputNum);
 
 
@@ -61,7 +61,7 @@ int main(){
   else if(strcmp(input, "FILE") == 0){
     ifstream fin("Numbers.txt");
     int tmpValue = 0;
-    while(fin >> tmpValue){
+    while(fin >> inputValue){
       numElements++;
       Node* tempNode = new Node(); //Does iterating to create a new node work like this? The same names won't conflict?
       tempNode->makeValue(inputValue);
@@ -91,7 +91,9 @@ int main(){
       cin.clear();
       cin.ignore(10000, '\n');
       cout << "DEBUG: Current inputValue is " << inputValue << endl;
-      ADDNUM(inputValue, rootNode);
+      Node* tempNode = new Node();
+      tempNode->makeValue(inputValue);
+      ADDNUM(tempNode, rootNode);
     }
     else if(strcmp, (input, "SEARCH") == 0){
       cout << "What number to check for?" << endl;
@@ -111,7 +113,8 @@ int main(){
 }
 
 void SORT_INPUT(Node* inputNode, Node* currNode){ //Top Down Sort (From Root)
-  if(inputNode->returnValue() == currNode->returnValue()){ //Equal Case (Sorts Right | Right-Leaning Bias)
+  if(inputNode->returnValue() == currNode->returnValue() && currNode->returnRight() != NULL){ //Equal Case (Sorts Right | Right-Leaning Bias)
+    inputNode->makeRight(currNode->returnRight());
     currNode->makeRight(inputNode);
   }
   else if(inputNode->returnValue() > currNode->returnValue()){ //Greater Case (Check Right)
@@ -128,17 +131,15 @@ void SORT_INPUT(Node* inputNode, Node* currNode){ //Top Down Sort (From Root)
       currNode->makeLeft(inputNode);
     }
     else{
-      currNode = currNode->returnRight();
+      currNode = currNode->returnLeft();
       SORT_INPUT(inputNode, currNode);
     }
   }
   return;
 }
 
-void ADDNUM(int inputNum, Node* root){ //Add number to binary tree
-  Node* tempNode = new Node();
-  tempNode->makeValue(inputNum);
-  SORT_INPUT(tempNode, root);
+void ADDNUM(Node* inputNum, Node* root){ //Add number to binary tree
+  SORT_INPUT(inputNum, root);
   return;
 }
 
@@ -188,8 +189,9 @@ void REMOVENUM(Node* currNode, int inputNum){ //Essentially SEARCH() with a remo
   while(numsRemoved == false){
     if(currNode == NULL){ //Iterated all the way until currNode was set to a NULL (end of tree)
       numsRemoved = true;
+      break;
     }
-    if(inputNum > currNode->returnValue()){ //Input num is greater than current node value
+    if(inputNum >= currNode->returnValue()){ //Input num is greater than current node value
       if(currNode->returnRight()->returnValue() == inputNum){ //Matching Case on Right Side | Remove & Resort
 	if(currNode->returnRight()->returnRight() == NULL && currNode->returnRight()->returnLeft() == NULL){ //No children case
 	  delete currNode->returnRight();
@@ -233,7 +235,7 @@ void REMOVENUM(Node* currNode, int inputNum){ //Essentially SEARCH() with a remo
 	currNode = currNode->returnRight();
 	}
     }
-    else if(inputNum < currNode->returnValue()){ //Input num is less than current node value
+    else if(inputNum <= currNode->returnValue()){ //Input num is less than current node value
       if(currNode->returnLeft()->returnValue() == inputNum){ //Matching Case on Left Side | Remove & Resort
 	if(currNode->returnLeft()->returnRight() == NULL && currNode->returnRight()->returnLeft() == NULL){ //No children case
 	  delete currNode->returnLeft();
