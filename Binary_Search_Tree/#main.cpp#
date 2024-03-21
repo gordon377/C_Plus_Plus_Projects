@@ -268,7 +268,7 @@ void REMOVENUM(Node* currNode, int inputNum){ //Essentially SEARCH() with a remo
 	      tempNode = tempNode->returnLeft();
 	      }
 	  }
-	  //Reordering/Restructuring tree | Replacing deleted position with node of right once left all the way
+	  //Reordering/Restructuring tree | Replacing deleted position node value with value of node of right once left all the way, then doing some clean-up connection work
 	  currNode->returnLeft()->makeValue(tempNode->returnValue());
 	  beforeTemp->makeLeft(tempNode->returnRight());
 	  delete tempNode;
