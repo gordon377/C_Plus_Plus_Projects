@@ -33,7 +33,7 @@ int main(){
   cin >> rootNum;
   cin.clear();
   cin.ignore(10000, '\n');
-  Node* rootNode = new Node(); //Being Tree
+  Node* rootNode = new Node(); //Begin Tree
   rootNode->makeValue(rootNum);
   tempParentNode->makeValue(rootNum); //Set temp parent as root value for frist instance of iteration
   
@@ -193,7 +193,7 @@ void REMOVENUM(Node* node, int removeValue){ //Modelled after Jazveer Kaler's fu
   else if (removeValue > node->returnValue())
     REMOVENUM(node->returnRight(), removeValue);
   else{
-    if(node->returnLeft() == NULL && node->returnRight()){ //No children case
+    if(node->returnLeft() == NULL && node->returnRight() == NULL){ //No children case
       delete node;
       node = NULL;
     }
@@ -208,7 +208,7 @@ void REMOVENUM(Node* node, int removeValue){ //Modelled after Jazveer Kaler's fu
       delete tempNode;
     }
     else{ //Two children case (Max children case)
-      Node* tempNode = node;
+      Node* tempNode = node->returnRight();
       while(tempNode->returnLeft() != NULL){
 	tempNode = tempNode->returnLeft();
       }
