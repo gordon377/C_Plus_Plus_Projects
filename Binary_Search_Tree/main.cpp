@@ -195,16 +195,18 @@ void REMOVENUM(Node* node, int removeValue){ //Modelled after Jazveer Kaler's fu
   else{
     if(node->returnLeft() == NULL && node->returnRight() == NULL){ //No children case
       delete node;
-      node = NULL;
+      return;
     }
     else if(node->returnLeft() == NULL){ //Only a right child case
-      Node* tempNode = node;
-      node = node->returnRight();
+      Node* tempNode = node->returnRight();
+      node->makeRight(tempNode->returnRight());
+      node->makeLeft(tempNode->returnLeft());
       delete tempNode;
     }
     else if(node->returnRight() == NULL){ //Only a left child case
-      Node* tempNode = node;
-      node = node->returnLeft();
+      Node* tempNode = node->returnLeft();
+      node->makeRight(tempNode->returnRight());
+      node->makeLeft(tempNode->returnLeft());
       delete tempNode;
     }
     else{ //Two children case (Max children case)
