@@ -13,7 +13,8 @@ using namespace std;
 
 void SORT_INPUT(Node* inputNode, Node* currNode); //Input Value into tree properly (with respect to the root value)
 void PRINT(Node* currNode, int count);
-void REMOVENUM(Node* currNode, int inputNum); //To remove a nodes of a certain num
+//void REMOVENUM(Node* currNode, int inputNum); //To remove a nodes of a certain num
+void REMOVENUM(Node* node, int removeValue); //REMOVENUM take 2
 void ADDNUM(Node* inputNum, Node* root);
 void SEARCH(Node* currNode, int inputNum);
 
@@ -63,7 +64,7 @@ int main(){
     int tmpValue = 0;
     while(fin >> inputValue){
       numElements++;
-      Node* tempNode = new Node(); //Does iterating to create a new node work like this? The same names won't conflict?
+      Node* tempNode = new Node(); 
       tempNode->makeValue(inputValue);
       SORT_INPUT(tempNode, rootNode);
     }
@@ -184,6 +185,41 @@ void SEARCH(Node* currNode, int inputNum){ //Check if number is in binary tree
   }
 }
 
+void REMOVENUM(Node* node, int removeValue){ //Modelled after Jazveer Kaler's function
+  if(node == NULL)
+    return;
+  if(removeValue < node->returnValue())
+    REMOVENUM(node->returnLeft(), removeValue);
+  else if (removeValue > node->returnValue())
+    REMOVENUM(node->returnRight(), removeValue);
+  else{
+    if(node->returnLeft() == NULL && node->returnRight()){ //No children case
+      delete node;
+      node = NULL;
+    }
+    else if(node->returnLeft() == NULL){ //Only a right child case
+      Node* tempNode = node;
+      node = node->returnRight();
+      delete tempNode;
+    }
+    else if(node->returnRight() == NULL){ //Only a left child case
+      Node* tempNode = node;
+      node = node->returnLeft();
+      delete tempNode;
+    }
+    else{ //Two children case (Max children case)
+      Node* tempNode = node;
+      while(tempNode->returnLeft() != NULL){
+	tempNode = tempNode->returnLeft();
+      }
+      node->makeValue(tempNode->returnValue());
+      REMOVENUM(node->returnRight(), tempNode->returnValue());
+    }
+  }
+}
+
+/*
+
 void REMOVENUM(Node* currNode, int inputNum){ //Essentially SEARCH() with a removing function
   bool numsRemoved = false;
   while(numsRemoved == false){
@@ -283,3 +319,4 @@ void REMOVENUM(Node* currNode, int inputNum){ //Essentially SEARCH() with a remo
   return;
 } //End of REMOVENUM function 
 
+*/
