@@ -1,0 +1,28 @@
+#ifndef NODE_H
+#define NODE_H
+
+using namespace std;
+
+class Node {
+ public:
+  Node();
+  ~Node();
+
+  bool returnRed();
+  int returnValue();
+  Node* returnLeft();
+  Node* returnRight();
+
+  void recolor();
+  void makeRight(Node*);
+  void makeLeft(Node*);
+  void makeValue(int);
+
+ private:
+  bool red;
+  int value;
+  Node* right;
+  Node* left;
+
+};
+#endif

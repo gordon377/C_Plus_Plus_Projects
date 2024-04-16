@@ -65,7 +65,7 @@ int main(){
     int charCount = 0; //Chars before a space
     int inputLength = 0; //Number of chars pointers in extraTemp
     top = NULL;
-    front = NULL;
+C    front = NULL;
     back = NULL;
     for (int i = 0; i< strlen(inputValue); i++){
       if(inputValue[i] == ' '){ //If space
@@ -346,7 +346,7 @@ void treePush(Node*& tree, Node*& placeholder){
 
 void printPostfix(Node* PostfixExp){
   if(PostfixExp != NULL){ //Print Expression in Postfix Notation from Expression Tree
-https://github.com/gordon377/C_Plus_Plus_Projects.git    printPostfix(PostfixExp->returnLeft());
+    printPostfix(PostfixExp->returnLeft());
     printPostfix(PostfixExp->returnRight());
     cout << PostfixExp->returnValue() << " ";
   }
