@@ -1,11 +1,12 @@
 #include <iostream>
-#incldue <cstring>
-#incldue "node.h"
+#include <cstring>
+#include "node.h"
 
 using namespace std;
 
 Node::Node(){
-  red = true
+  red = true;
+  parent = NULL;
   left = NULL;
   right = NULL;
   value = 0;
@@ -18,6 +19,10 @@ Node::~Node(){ //May have to adjust when looking into deletions
 
 bool Node::returnRed(){
   return red;
+}
+
+Node* Node::returnParent(){
+  return parent;
 }
 
 Node* Node::returnRight(){
@@ -41,6 +46,10 @@ void Node::recolor(){
   else if(red == false){
     red = true;
   }
+}
+
+void Node::makeParent(Node* inputParent){
+  parent = inputParent;
 }
 
 void Node::makeRight(Node* inputRight){

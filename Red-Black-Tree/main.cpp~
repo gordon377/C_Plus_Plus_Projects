@@ -1,0 +1,55 @@
+//Red-Black Tree
+//Gordon Chen
+//March 16, 2024
+
+#include <iostream>
+#include <cstring>
+#include <fstream>
+#include "node.h"
+
+using namespace std;
+
+//Function Prototypes
+
+void PRINT(Node* currNode, int count);
+void SEARCH(Node* currNode, int inputNum);
+
+//Insertion Prototypes
+void BINARY_SORT_IN(Node* inputNode, Node* currNode);
+void RED_BLACK_SORT_IN(Node* inputNode);
+
+
+int main(){
+  bool active = true;
+  char input[50];
+  int inputValue = 0;
+
+  cout << "Input Root Value (Set Root Node)" << endl;
+  cin >> inputValue;
+  cin.clear();
+  cin.ignore(10000, '\n');
+  Node* rootNode = new Node();
+  rootNode->recolor(); //Set Node to black
+  rootNode->makeValue(inputValue);
+
+  cout << "How do you want to add the initial group of numbers? MANUAL or FILE?" << endl;
+  cin >> input;
+  cin.clear();
+  cin.ignore(10000, '\n');
+  if(strcmp(input, "MANUAL") == 0){
+    cout << "How many additional numbers would you like to input?" << endl;
+    cin >> inputValue;
+    for(int i = 0; i < inputValue; i++){
+      cout << "Enter number: " << endl;
+      cin >> inputValue;
+      cin.clear();
+      cin.ignore(10000, '\n');
+      Node* tempNode = new Node();
+      tempNode->makeValue(inputValue);
+      BINARY_SORT_IN(tempNode, rootNode);
+      RED_BLACK_SORT_IN(tempNode);
+    }
+  }
+
+  
+}

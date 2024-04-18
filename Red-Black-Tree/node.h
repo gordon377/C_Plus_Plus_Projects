@@ -10,10 +10,12 @@ class Node {
 
   bool returnRed();
   int returnValue();
+  Node* returnParent();
   Node* returnLeft();
   Node* returnRight();
 
   void recolor(Node*);
+  void makeParent(Node*);
   void makeRight(Node*);
   void makeLeft(Node*);
   void makeValue(int);
@@ -21,6 +23,7 @@ class Node {
  private:
   bool red;
   int value;
+  Node* parent;
   Node* right;
   Node* left;
 
