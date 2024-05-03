@@ -151,12 +151,13 @@ char CHILD_TYPE(Node* inputNode){
   }
   else{
     cout << "CHILD_TYPE ERROR" << endl;
+    return 'E';
   }
 }
 
 void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE HERE
   Node* tmpParent = inputNode->returnParent(); //Original Parent
-  Node* tmpRChildLeft = inputNode->returnRight(); //Original Right Child's Left
+  Node* tmpRChildLeft = inputNode->returnRight()->returnLeft(); //Original Right Child's Left
 
   if(CHILD_TYPE(inputNode) == 'L'){
     tmpParent->makeLeft(inputNode->returnRight());
@@ -173,6 +174,21 @@ void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE
 }
 
 void ROTATE_RIGHT(Node* inputNode){
+  Node* tmpParent = inputNode->returnParent();
+  Node* tmpRChildRight = inputNode->returnLeft()->returnRight();
+
+  if(CHILD_TYPE(inputNode) == 'L'){
+    tmpParent->makeLeft(inputNode->returnLeft());
+  }
+  else if(CHILD_TYPE(inputNode) == 'R'){
+    tmpParent->makeRight(inputNode->returnLeft());
+  }
+
+  inputNode->makeParent(inputNode->returnLeft());
+
+  inputNode->returnLeft()->makeRight(inputNode);
+  inputNode->makeLeft(tmpRChildRight);
+
   return;
 }
 
