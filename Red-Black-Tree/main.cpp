@@ -143,7 +143,11 @@ Node* FIND_UNCLE(Node* inputNode){
 }
 
 char CHILD_TYPE(Node* inputNode){
-  if(inputNode->returnParent()->returnLeft() == inputNode){
+  if(inputNode->returnParent() == NULL){
+    cout << "Child_Type Check: Parent Doesn't Exist" << endl;
+    return 'E';
+  }
+  else if(inputNode->returnParent()->returnLeft() == inputNode){
     return 'L';
   }
   else if(inputNode->returnParent()->returnRight() == inputNode){
@@ -157,37 +161,40 @@ char CHILD_TYPE(Node* inputNode){
 
 void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE HERE
   Node* tmpParent = inputNode->returnParent(); //Original Parent
-  Node* tmpRChildLeft = inputNode->returnRight()->returnLeft(); //Original Right Child's Left
-
-  if(CHILD_TYPE(inputNode) == 'L'){
+  Node* tmpRChild = inputNode->returnRight(); //Original Right Child
+  if(CHILD_TYPE(inputNode) == 'L' && tmpParent != NULL){
     tmpParent->makeLeft(inputNode->returnRight());
   }
-  else if(CHILD_TYPE(inputNode) == 'R'){
+  else if(CHILD_TYPE(inputNode) == 'R' && tmpParent != NULL){
     tmpParent->makeRight(inputNode->returnRight());
   }
   
   inputNode->makeParent(inputNode->returnRight()); 
   
   inputNode->returnRight()->makeLeft(inputNode);
-  inputNode->makeRight(tmpRChildLeft);
+  if(tmpRChild != NULL){
+    inputNode->makeRight(tmpRChild->returnLeft());
+  }
   return;
 }
 
 void ROTATE_RIGHT(Node* inputNode){
-  Node* tmpParent = inputNode->returnParent();
-  Node* tmpRChildRight = inputNode->returnLeft()->returnRight();
+  Node* tmpParent = inputNode->returnParent(); //Original Parent
+  Node* tmpLChild = inputNode->returnLeft(); // Original Left Child
 
-  if(CHILD_TYPE(inputNode) == 'L'){
+  if(CHILD_TYPE(inputNode) == 'L' && tmpParent != NULL){
     tmpParent->makeLeft(inputNode->returnLeft());
   }
-  else if(CHILD_TYPE(inputNode) == 'R'){
+  else if(CHILD_TYPE(inputNode) == 'R' && tmpParent != NULL){
     tmpParent->makeRight(inputNode->returnLeft());
   }
 
   inputNode->makeParent(inputNode->returnLeft());
 
   inputNode->returnLeft()->makeRight(inputNode);
-  inputNode->makeLeft(tmpRChildRight);
+  if(tmpLChild != NULL){
+    inputNode->makeLeft(tmpLChild->returnRight());
+  }
 
   return;
 }
@@ -212,9 +219,10 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
     }
   }
   else if((UNCLE->returnRed() == false || UNCLE == NULL) && CHILD_TYPE(inputNode) == CHILD_TYPE(inputNode->returnParent())){
-    //Storing original parent and grandparent pointers
+    //If statement should guaratnee there is a non-NULL grandparent
+
+    //Storing original parent
     Node* PARENT = inputNode->returnParent();
-    Node* GRANDPARENT = inputNode->returnParent()->returnParent();
 
     if(CHILD_TYPE(inputNode) == 'L'){
       ROTATE_RIGHT(inputNode->returnParent()->returnParent());
@@ -224,7 +232,9 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
     }
 
     PARENT->recolor();
-    GRANDPARENT->recolor();
+    if(PARENT->returnParent() != NULL){
+      PARENT->returnParent()->recolor();
+    }
   }
   return;
 }
