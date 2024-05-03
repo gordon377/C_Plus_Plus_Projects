@@ -14,11 +14,13 @@ using namespace std;
 void PRINT(Node* currNode, int count);
 void SEARCH(Node* currNode, int inputNum);
 
-//Insertion Prototypes
+//Insertion-Related Prototypes
 void BINARY_SORT_IN(Node* inputNode, Node* currNode);
 void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode);
 Node* FIND_UNCLE(Node* inputNode);
 char CHILD_TYPE(Node* inputNode);
+void ROTATE_LEFT(Node* inputNode);
+void ROTATE_RIGHT(Node* inputNode);
 
 
 int main(){
@@ -152,7 +154,21 @@ char CHILD_TYPE(Node* inputNode){
   }
 }
 
-void ROTATE_LEFT(Node* inputNode){
+void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE HERE
+  Node* tmpParent = inputNode->returnParent(); //Original Parent
+  Node* tmpRChildLeft = inputNode->returnRight(); //Original Right Child's Left
+
+  if(CHILD_TYPE(inputNode) == 'L'){
+    tmpParent->makeLeft(inputNode->returnRight());
+  }
+  else if(CHILD_TYPE(inputNode) == 'R'){
+    tmpParent->makeRight(inputNode->returnRight());
+  }
+  
+  inputNode->makeParent(inputNode->returnRight()); 
+  
+  inputNode->returnRight()->makeLeft(inputNode);
+  inputNode->makeRight(tmpRChildLeft);
   return;
 }
 
