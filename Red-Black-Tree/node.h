@@ -14,7 +14,7 @@ class Node {
   Node* returnLeft();
   Node* returnRight();
 
-  void recolor(Node*);
+  void recolor();
   void makeParent(Node*);
   void makeRight(Node*);
   void makeLeft(Node*);
