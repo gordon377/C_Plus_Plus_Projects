@@ -131,11 +131,16 @@ void SEARCH(Node* currNode, int inputNum){
 }
 
 Node* FIND_UNCLE(Node* inputNode){
-  if(inputNode->returnParent()->returnParent()->returnLeft() == inputNode && inputNode->returnParent()->returnParent()->returnRight() != NULL){
-    return inputNode->returnParent()->returnParent()->returnRight();
-  }
-  else if(inputNode->returnParent()->returnParent()->returnRight() == inputNode && inputNode->returnParent()->returnParent()->returnLeft() != NULL){
-    return inputNode->returnParent()->returnParent()->returnLeft();
+  if(inputNode->returnParent()->returnParent() != NULL){
+    if(inputNode->returnParent()->returnParent()->returnLeft() == inputNode && inputNode->returnParent()->returnParent()->returnRight() != NULL){
+      return inputNode->returnParent()->returnParent()->returnRight();
+    }
+    else if(inputNode->returnParent()->returnParent()->returnRight() == inputNode && inputNode->returnParent()->returnParent()->returnLeft() != NULL){
+      return inputNode->returnParent()->returnParent()->returnLeft();
+    }
+    else{
+      return NULL;
+    }
   }
   else{
     return NULL;
@@ -160,6 +165,7 @@ char CHILD_TYPE(Node* inputNode){
 }
 
 void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE HERE
+  //Input Node's parent might be NULL.....
   Node* tmpParent = inputNode->returnParent(); //Original Parent
   Node* tmpRChild = inputNode->returnRight(); //Original Right Child
   if(CHILD_TYPE(inputNode) == 'L' && tmpParent != NULL){
@@ -180,7 +186,7 @@ void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE
 
 void ROTATE_RIGHT(Node* inputNode){
   Node* tmpParent = inputNode->returnParent(); //Original Parent
-  Node* tmpLChild = inputNode->returnLeft(); // Original Left Child
+  Node* tmpLChild = inputNode->returnLeft(); //Original Left Child
 
   if(CHILD_TYPE(inputNode) == 'L' && tmpParent != NULL){
     tmpParent->makeLeft(inputNode->returnLeft());
