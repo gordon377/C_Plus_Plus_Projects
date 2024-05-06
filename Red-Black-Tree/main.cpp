@@ -35,13 +35,13 @@ int main(){
   cin.ignore(10000, '\n');
   Node* rootNode = new Node();
   rootNode->makeValue(inputValue);
-  rootNode->recolor();
 
   cout << "How do you want to add the initial group of numbers? MANUAL or FILE?" << endl;
   cin >> input;
   cin.clear();
   cin.ignore(10000, '\n');
   if(strcmp(input, "MANUAL") == 0){
+    RED_BLACK_SORT_IN(rootNode, rootNode);
     cout << "How many additional numbers would you like to input?" << endl;
     cin >> inputValue;
     for(int i = 0; i < inputValue; i++){
@@ -56,10 +56,11 @@ int main(){
 	cout << "NO PARENT" << endl;
       }
       RED_BLACK_SORT_IN(tempNode, rootNode);
+      PRINT(rootNode, count);
     }
   }
   else if(strcmp(input, "FILE") == 0){
-    ifstream fin("Numbers.txt");
+    ifstream fin("numbers-short.txt");
     while(fin>>inputValue){
       Node* tempNode = new Node();
       tempNode->makeValue(inputValue);
@@ -189,7 +190,9 @@ void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE
     cout << "STEP 2 (tmpRChild Exists)" << endl;
     inputNode->makeRight(tmpRChild->returnLeft());
     cout << "STEP 3" << endl;
-    tmpRChild->returnLeft()->makeParent(inputNode);
+    if(tmpRChild->returnLeft() != NULL){
+      tmpRChild->returnLeft()->makeParent(inputNode);
+    }
     cout << "STEP 4" << endl;
     tmpRChild->makeLeft(inputNode);
     cout << "STEP 5" << endl;
@@ -229,7 +232,9 @@ void ROTATE_RIGHT(Node* inputNode){
     cout << "STEP 2 (tmpLChild Exists)" << endl;
     inputNode->makeLeft(tmpLChild->returnRight());
     cout << "STEP 3" << endl;
-    tmpLChild->returnRight()->makeParent(inputNode);
+    if(tmpLChild->returnRight() != NULL){
+      tmpLChild->returnRight()->makeParent(inputNode);
+    }
     cout << "STEP 4" << endl;
     tmpLChild->makeRight(inputNode);
     cout << "STEP 5" << endl;
@@ -250,12 +255,17 @@ void ROTATE_RIGHT(Node* inputNode){
 }
 
 void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
-  Node* UNCLE = FIND_UNCLE(inputNode); //UNCLE could be NULL...
+  if(inputNode->returnParent() != NULL){
+    Node* UNCLE = FIND_UNCLE(inputNode); //UNCLE could be NULL...
+  }
+  else{
+    Node* UNCLE = NULL;
+  }
   //Checking which of four cases
   if(inputNode == rootNode){ //Input is root
     inputNode->recolor(); //Recolor Node to Black
   }
-  else if((UNCLE == NULL || UNCLE->returnRed() == false) && (CHILD_TYPE(inputNode) != CHILD_TYPE(inputNode->returnParent())) && (inputNode->returnParent()->returnParent() != NULL)){ //Uncle is Black or NULL & in Triangle formation with input
+  else if((inputNode->returnParent() != NULL) && (UNCLE == NULL || UNCLE->returnRed() == false) && (CHILD_TYPE(inputNode) != CHILD_TYPE(inputNode->returnParent())) && (inputNode->returnParent()->returnParent() != NULL)){ //Uncle is Black or NULL & in Triangle formation with input
 
     cout << "Black Uncle Triangle Case" << endl;
     
