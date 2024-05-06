@@ -64,6 +64,7 @@ int main(){
       Node* tempNode = new Node();
       tempNode->makeValue(inputValue);
       BINARY_SORT_IN(tempNode, rootNode);
+      PRINT(rootNode, count);
       RED_BLACK_SORT_IN(tempNode, rootNode);
     }
   }
@@ -171,6 +172,7 @@ char CHILD_TYPE(Node* inputNode){ //Requires Parent to Exist to work...
 
 void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE HERE
   //Input Node's parent might be NULL.....
+  cout << "LEFT ROTATE ACTIVATED" << endl;
   Node* tmpParent = inputNode->returnParent(); //Original Parent
   Node* tmpRChild = inputNode->returnRight(); //Original Right Child
   if(CHILD_TYPE(inputNode) == 'L' && tmpParent != NULL){
@@ -180,14 +182,28 @@ void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE
     tmpParent->makeRight(inputNode->returnRight());
   }
   
-  inputNode->makeParent(inputNode->returnRight()); 
+  inputNode->makeParent(tmpRChild);
+  cout << "STEP 1 Finished" << endl;
   
   if(tmpRChild != NULL){
+    cout << "STEP 2 (tmpRChild Exists)" << endl;
     inputNode->makeRight(tmpRChild->returnLeft());
+    cout << "STEP 3" << endl;
     tmpRChild->returnLeft()->makeParent(inputNode);
+    cout << "STEP 4" << endl;
     tmpRChild->makeLeft(inputNode);
+    cout << "STEP 5" << endl;
     if(tmpParent != NULL){
       tmpRChild->makeParent(tmpParent);
+      if(tmpParent->returnRight() == inputNode){
+	tmpParent->makeRight(tmpRChild);
+      }
+      else if(tmpParent->returnLeft() == inputNode){
+	tmpParent->makeLeft(tmpRChild);
+      }
+    }
+    else if(tmpParent == NULL){
+      tmpRChild->makeParent(NULL);
     }
   }
 
@@ -195,6 +211,7 @@ void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE
 }
 
 void ROTATE_RIGHT(Node* inputNode){
+  cout << "RIGHT ROTATE ACTIVATED" << endl;
   Node* tmpParent = inputNode->returnParent(); //Original Parent
   Node* tmpLChild = inputNode->returnLeft(); //Original Left Child
 
@@ -205,14 +222,28 @@ void ROTATE_RIGHT(Node* inputNode){
     tmpParent->makeRight(inputNode->returnLeft());
   }
 
-  inputNode->makeParent(inputNode->returnLeft());
+  inputNode->makeParent(tmpLChild);
+  cout << "STEP 1 Finished" << endl;
 
   if(tmpLChild != NULL){
+    cout << "STEP 2 (tmpLChild Exists)" << endl;
     inputNode->makeLeft(tmpLChild->returnRight());
+    cout << "STEP 3" << endl;
     tmpLChild->returnRight()->makeParent(inputNode);
+    cout << "STEP 4" << endl;
     tmpLChild->makeRight(inputNode);
+    cout << "STEP 5" << endl;
     if(tmpParent != NULL){
       tmpLChild->makeParent(tmpParent);
+      if(tmpParent->returnRight() == inputNode){
+	tmpParent->makeRight(tmpLChild);
+      }
+      else if(tmpParent->returnLeft() == inputNode){
+	tmpParent->makeLeft(tmpLChild);
+      }
+    }
+    else if(tmpParent == NULL){
+      tmpLChild->makeParent(NULL);
     }
   }
   return;
@@ -240,8 +271,13 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
 
     cout << "Black Uncle Line Case" << endl;
 
-    //Storing original parent
+    //Storing original parent and grandparent
     Node* PARENT = inputNode->returnParent();
+    Node* GRANDPARENT = PARENT->returnParent();
+
+    if(PARENT == NULL){
+      cout << "DEBUG: NULL PARENT" << endl;
+    }
 
     if(CHILD_TYPE(inputNode) == 'L'){
       ROTATE_RIGHT(inputNode->returnParent()->returnParent());
@@ -250,9 +286,11 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
       ROTATE_LEFT(inputNode->returnParent()->returnParent());
     }
 
+    cout << "Rotations Finished" << endl;
+    
     PARENT->recolor();
-    if(PARENT->returnParent() != NULL){
-      PARENT->returnParent()->recolor();
+    if(GRANDPARENT != NULL){
+      GRANDPARENT->recolor();
     }
   }
   else if(UNCLE != NULL){
@@ -262,6 +300,9 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
       inputNode->returnParent()->returnParent()->recolor();
       UNCLE->recolor();
     }
+  }
+  else{
+    cout << "No Case Fit" << endl;
   }
 
   return;
