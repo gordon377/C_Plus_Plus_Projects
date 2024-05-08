@@ -55,7 +55,10 @@ int main(){
       if(tempNode->returnParent() == NULL){ //Didn't Activate, therefore parent value must be assigned...
 	cout << "NO PARENT" << endl;
       }
+      cout << "------------PRE RED BLACK SORT PRINT--------------" << endl;
+      PRINT(rootNode, count);
       RED_BLACK_SORT_IN(tempNode, rootNode);
+      cout << "------------POST RED BLACK SORT PRINT-------------" << endl;
       PRINT(rootNode, count);
     }
   }
@@ -65,8 +68,11 @@ int main(){
       Node* tempNode = new Node();
       tempNode->makeValue(inputValue);
       BINARY_SORT_IN(tempNode, rootNode);
+      cout << "------------PRE RED BLACK SORT PRINT--------------" << endl;
       PRINT(rootNode, count);
       RED_BLACK_SORT_IN(tempNode, rootNode);
+      cout << "------------POST RED BLACK SORT PRINT-------------" << endl;
+      PRINT(rootNode, count);
     }
   }
 
@@ -138,6 +144,9 @@ void SEARCH(Node* currNode, int inputNum){
 }
 
 Node* FIND_UNCLE(Node* inputNode){
+  if(inputNode->returnParent() == NULL){
+    return inputNode;
+  }
   if(inputNode->returnParent()->returnParent() != NULL){
     if(inputNode->returnParent() == inputNode->returnParent()->returnParent()->returnLeft()){
       return inputNode->returnParent()->returnParent()->returnRight();
@@ -182,6 +191,9 @@ void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE
   else if(CHILD_TYPE(inputNode) == 'R' && tmpParent != NULL){
     tmpParent->makeRight(inputNode->returnRight());
   }
+  else if(tmpParent == NULL){
+    tmpRChild->makeParent(NULL);
+  }
   
   inputNode->makeParent(tmpRChild);
   cout << "STEP 1 Finished" << endl;
@@ -198,15 +210,6 @@ void ROTATE_LEFT(Node* inputNode){ //This might work? Check over again. CONTINUE
     cout << "STEP 5" << endl;
     if(tmpParent != NULL){
       tmpRChild->makeParent(tmpParent);
-      if(tmpParent->returnRight() == inputNode){
-	tmpParent->makeRight(tmpRChild);
-      }
-      else if(tmpParent->returnLeft() == inputNode){
-	tmpParent->makeLeft(tmpRChild);
-      }
-    }
-    else if(tmpParent == NULL){
-      tmpRChild->makeParent(NULL);
     }
   }
 
@@ -224,6 +227,9 @@ void ROTATE_RIGHT(Node* inputNode){
   else if(CHILD_TYPE(inputNode) == 'R' && tmpParent != NULL){
     tmpParent->makeRight(inputNode->returnLeft());
   }
+  else if(tmpParent == NULL){
+    tmpLChild->makeParent(NULL);
+  }
 
   inputNode->makeParent(tmpLChild);
   cout << "STEP 1 Finished" << endl;
@@ -240,34 +246,24 @@ void ROTATE_RIGHT(Node* inputNode){
     cout << "STEP 5" << endl;
     if(tmpParent != NULL){
       tmpLChild->makeParent(tmpParent);
-      if(tmpParent->returnRight() == inputNode){
-	tmpParent->makeRight(tmpLChild);
-      }
-      else if(tmpParent->returnLeft() == inputNode){
-	tmpParent->makeLeft(tmpLChild);
-      }
-    }
-    else if(tmpParent == NULL){
-      tmpLChild->makeParent(NULL);
     }
   }
   return;
 }
 
 void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
-  if(inputNode->returnParent() != NULL){
-    Node* UNCLE = FIND_UNCLE(inputNode); //UNCLE could be NULL...
-  }
-  else{
-    Node* UNCLE = NULL;
-  }
+  Node* UNCLE = FIND_UNCLE(inputNode); //UNCLE could be NULL... || If inputNode == ROOT, UNCLE is inputNode
   //Checking which of four cases
   if(inputNode == rootNode){ //Input is root
     inputNode->recolor(); //Recolor Node to Black
   }
-  else if((inputNode->returnParent() != NULL) && (UNCLE == NULL || UNCLE->returnRed() == false) && (CHILD_TYPE(inputNode) != CHILD_TYPE(inputNode->returnParent())) && (inputNode->returnParent()->returnParent() != NULL)){ //Uncle is Black or NULL & in Triangle formation with input
+  else if((UNCLE != inputNode) && (inputNode->returnParent() != NULL) && (UNCLE == NULL || UNCLE->returnRed() == false) && (CHILD_TYPE(inputNode) != CHILD_TYPE(inputNode->returnParent())) && (inputNode->returnParent()->returnParent() != NULL)){ //Uncle is Black or NULL & in Triangle formation with input
 
     cout << "Black Uncle Triangle Case" << endl;
+    cout << "inputNode Child Type: " << CHILD_TYPE(inputNode) << endl;
+    cout << "Parent Node Child Type: " << CHILD_TYPE(inputNode->returnParent()) << endl;
+
+
     
     if(CHILD_TYPE(inputNode) == 'L'){
       ROTATE_RIGHT(inputNode->returnParent());
@@ -276,7 +272,7 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
       ROTATE_LEFT(inputNode->returnParent());
     }
   }
-  else if((UNCLE == NULL || UNCLE->returnRed() == false) && (inputNode->returnParent() != NULL) && (inputNode->returnParent()->returnParent() != NULL) && (CHILD_TYPE(inputNode) == CHILD_TYPE(inputNode->returnParent()))){ //Uncle is Black or NULL & is in a Line formation with input
+  else if((UNCLE != inputNode) && (UNCLE == NULL || UNCLE->returnRed() == false) && (inputNode->returnParent() != NULL) && (inputNode->returnParent()->returnParent() != NULL) && (CHILD_TYPE(inputNode) == CHILD_TYPE(inputNode->returnParent()))){ //Uncle is Black or NULL & is in a Line formation with input
     //If statement should guaratnee there is a non-NULL grandparent
 
     cout << "Black Uncle Line Case" << endl;
@@ -303,7 +299,7 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
       GRANDPARENT->recolor();
     }
   }
-  else if(UNCLE != NULL){
+  else if((UNCLE != inputNode) && (UNCLE != NULL)){
     if(UNCLE->returnRed() == true){ //Uncle is Red
       cout << "Red Uncle Case" << endl;
       inputNode->returnParent()->recolor();
