@@ -16,7 +16,7 @@ void SEARCH(Node* currNode, int inputNum);
 
 //Insertion-Related Prototypes
 void BINARY_SORT_IN(Node* inputNode, Node* currNode);
-void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode);
+void RED_BLACK_SORT_IN(Node* inputNode, Node* &rootNode);
 Node* FIND_UNCLE(Node* inputNode);
 char CHILD_TYPE(Node* inputNode);
 void ROTATE_LEFT(Node* inputNode);
@@ -27,6 +27,7 @@ int main(){
   bool active = true;
   char input[50];
   int inputValue = 0;
+  int manualCount = 0;
   int count = 0;
 
   cout << "Input Root Value (Set Root Node)" << endl;
@@ -43,8 +44,8 @@ int main(){
   if(strcmp(input, "MANUAL") == 0){
     RED_BLACK_SORT_IN(rootNode, rootNode);
     cout << "How many additional numbers would you like to input?" << endl;
-    cin >> inputValue;
-    for(int i = 0; i < inputValue; i++){
+    cin >> manualCount;
+    for(int i = 0; i < manualCount; i++){
       cout << "Enter number: " << endl;
       cin >> inputValue;
       cin.clear();
@@ -90,10 +91,12 @@ int main(){
 //SET PARENTS
 
 void BINARY_SORT_IN(Node* inputNode, Node* currNode){ //Top Down Sort (From Root)
-  if(inputNode->returnValue() == currNode->returnValue() && currNode->returnRight() != NULL){ //Equal Case (Sorts Right | Right-Leaning Bias)
+  if(inputNode->returnValue() == currNode->returnValue()){ //Equal Case (Sorts Right | Right-Leaning Bias)
     inputNode->makeParent(currNode);
     inputNode->makeRight(currNode->returnRight());
-    currNode->returnRight()->makeParent(inputNode);
+    if(currNode->returnRight() != NULL){
+      currNode->returnRight()->makeParent(inputNode);
+    }
     currNode->makeRight(inputNode);
   }
   else if(inputNode->returnValue() > currNode->returnValue()){ //Greater Case (Check Right)
@@ -142,6 +145,7 @@ void PRINT(Node* currNode, int count){ //Visually print binary tree
 void SEARCH(Node* currNode, int inputNum){
   return;
 }
+
 
 Node* FIND_UNCLE(Node* inputNode){
   if(inputNode->returnParent() == NULL){
@@ -251,10 +255,10 @@ void ROTATE_RIGHT(Node* inputNode){
   return;
 }
 
-void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
+void RED_BLACK_SORT_IN(Node* inputNode, Node* &rootNode){
   Node* UNCLE = FIND_UNCLE(inputNode); //UNCLE could be NULL... || If inputNode == ROOT, UNCLE is inputNode
   //Checking which of four cases
-  if(inputNode == rootNode){ //Input is root
+  if(inputNode == rootNode && inputNode->returnRed() == true){ //Input is root
     inputNode->recolor(); //Recolor Node to Black
   }
   else if((UNCLE != inputNode) && (inputNode->returnParent() != NULL) && (UNCLE == NULL || UNCLE->returnRed() == false) && (CHILD_TYPE(inputNode) != CHILD_TYPE(inputNode->returnParent())) && (inputNode->returnParent()->returnParent() != NULL)){ //Uncle is Black or NULL & in Triangle formation with input
@@ -264,12 +268,16 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
     cout << "Parent Node Child Type: " << CHILD_TYPE(inputNode->returnParent()) << endl;
 
 
+    Node* PARENT = inputNode->returnParent(); //Original Parent
     
     if(CHILD_TYPE(inputNode) == 'L'){
       ROTATE_RIGHT(inputNode->returnParent());
     }
     else if(CHILD_TYPE(inputNode) == 'R'){
       ROTATE_LEFT(inputNode->returnParent());
+    }
+    if(PARENT == rootNode){
+      rootNode = inputNode;
     }
   }
   else if((UNCLE != inputNode) && (UNCLE == NULL || UNCLE->returnRed() == false) && (inputNode->returnParent() != NULL) && (inputNode->returnParent()->returnParent() != NULL) && (CHILD_TYPE(inputNode) == CHILD_TYPE(inputNode->returnParent()))){ //Uncle is Black or NULL & is in a Line formation with input
@@ -285,11 +293,17 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
       cout << "DEBUG: NULL PARENT" << endl;
     }
 
+    cout << "inputNode Child Type: " << CHILD_TYPE(inputNode) << endl;
+
     if(CHILD_TYPE(inputNode) == 'L'){
       ROTATE_RIGHT(inputNode->returnParent()->returnParent());
     }
     else if(CHILD_TYPE(inputNode) == 'R'){
       ROTATE_LEFT(inputNode->returnParent()->returnParent());
+    }
+
+    if(GRANDPARENT == rootNode){
+      rootNode = PARENT;
     }
 
     cout << "Rotations Finished" << endl;
@@ -302,9 +316,14 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* rootNode){
   else if((UNCLE != inputNode) && (UNCLE != NULL)){
     if(UNCLE->returnRed() == true){ //Uncle is Red
       cout << "Red Uncle Case" << endl;
-      inputNode->returnParent()->recolor();
-      inputNode->returnParent()->returnParent()->recolor();
-      UNCLE->recolor();
+      if(inputNode->returnParent()->returnParent() != rootNode){ //Is a subtree (GRANDPARENT isn't the Root Node)
+	inputNode->returnParent()->recolor();
+	inputNode->returnParent()->returnParent()->recolor();
+	UNCLE->recolor();
+      }
+      if(inputNode->returnParent()->returnParent()->returnRed() == true){
+	RED_BLACK_SORT_IN(inputNode->returnParent()->returnParent(), rootNode);
+      }
     }
   }
   else{
