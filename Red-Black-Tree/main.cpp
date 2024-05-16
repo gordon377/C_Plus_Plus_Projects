@@ -36,6 +36,7 @@ int main(){
   cin.ignore(10000, '\n');
   Node* rootNode = new Node();
   rootNode->makeValue(inputValue);
+  rootNode->recolor(); //Set root to black
 
   cout << "How do you want to add the initial group of numbers? MANUAL or FILE?" << endl;
   cin >> input;
@@ -256,6 +257,9 @@ void ROTATE_RIGHT(Node* inputNode){
 }
 
 void RED_BLACK_SORT_IN(Node* inputNode, Node* &rootNode){
+  if(inputNode->returnParent() != NULL){
+    if(inputNode->returnParent()->returnRed() == true){
+ 
   Node* UNCLE = FIND_UNCLE(inputNode); //UNCLE could be NULL... || If inputNode == ROOT, UNCLE is inputNode
   //Checking which of four cases
   if(inputNode == rootNode && inputNode->returnRed() == true){ //Input is root
@@ -272,9 +276,15 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* &rootNode){
     
     if(CHILD_TYPE(inputNode) == 'L'){
       ROTATE_RIGHT(inputNode->returnParent());
+      if(inputNode->returnRight()->returnRed() == true){
+	RED_BLACK_SORT_IN(inputNode->returnRight(), rootNode);
+      }
     }
     else if(CHILD_TYPE(inputNode) == 'R'){
       ROTATE_LEFT(inputNode->returnParent());
+      if(inputNode->returnLeft()->returnRed() == true){
+	RED_BLACK_SORT_IN(inputNode->returnLeft(), rootNode);
+      }
     }
     if(PARENT == rootNode){
       rootNode = inputNode;
@@ -321,10 +331,18 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* &rootNode){
 	inputNode->returnParent()->returnParent()->recolor();
 	UNCLE->recolor();
       }
-      if(inputNode->returnParent()->returnParent()->returnRed() == true){
-	RED_BLACK_SORT_IN(inputNode->returnParent()->returnParent(), rootNode);
+      else if(inputNode->returnParent()->returnParent() == rootNode){ //Is not a subtree (GRANDPARENT is the Root Node)
+	inputNode->returnParent()->recolor();
+	UNCLE->recolor();
+      }
+      if(inputNode->returnParent()->returnParent() != rootNode && inputNode->returnParent()->returnParent()->returnRed() == true){
+	if(inputNode->returnParent()->returnParent()->returnParent()->returnRed() == true){
+	  RED_BLACK_SORT_IN(inputNode->returnParent()->returnParent(), rootNode);
+	}
       }
     }
+  }
+  }
   }
   else{
     cout << "No Case Fit" << endl;
