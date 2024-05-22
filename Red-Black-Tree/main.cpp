@@ -12,7 +12,7 @@ using namespace std;
 //Function Prototypes
 
 void PRINT(Node* currNode, int count);
-void SEARCH(Node* currNode, int inputNum);
+Node* SEARCH(Node* currNode, int inputNum);
 
 //Insertion-Related Prototypes
 void BINARY_SORT_IN(Node* inputNode, Node* currNode);
@@ -79,9 +79,57 @@ int main(){
   }
 
   cout << "DEBUG: INITIAL INSERTIONS FINISHED" << endl;
+  cout << "------------------FINAL INSERTION PRINT-------------------" << endl;
+  
+  PRINT(rootNode, count);
 
-  //Automatically print (for now)
-  PRINT(rootNode, count); 
+  cout << "------------------FINAL INSERTION PRINT FINISHED---------------------" << endl;
+
+
+  while(active){
+    cout << "\n Enter one of the following commands: PRINT, ADDNUM, REMOVENUM, SEARCH, QUIT" << endl;
+    cin >> input;
+    if(strcmp(input, "PRINT") == 0){
+      PRINT(rootNode, count);
+      cout << "DEBUG: PRINT FINISHED" << endl;
+    }
+    else if(strcmp(input, "ADDNUM") == 0){
+      cout << "What number to add?" << endl;
+      cin >> inputValue;
+      cin.clear();
+      cin.ignore(10000, '\n');
+      Node* tempNode = new Node();
+      tempNode->makeValue(inputValue);
+      BINARY_SORT_IN(tempNode, rootNode);
+      RED_BLACK_SORT_IN(tempNode, rootNode);
+      cout << "Number added!" << endl;
+    }
+    else if(strcmp(input, "SEARCH") == 0){
+      cout << "What number to check for?" << endl;
+      cin >> inputValue;
+      if(SEARCH(rootNode, inputValue) != NULL){
+	cout << "That number is in the tree!" << endl;
+      }
+      else{
+	cout << "That number is not in the tree!" << endl;
+
+      }
+    }
+    else if(strcmp(input, "REMOVENUM") == 0){
+      cout << "What number/value to remove?" << endl;
+      cin >> inputValue;
+      cin.clear();
+      cin.ignore(10000, '\n');
+      cout << "WORK IN PROGRESS" << endl;
+    }
+    else if(strcmp(input, "QUIT") == 0){
+      active = false;
+    }
+    else{
+      cout << "Invalid Input" << endl;
+    }
+  }
+  
 
   return 0;
 }
@@ -113,7 +161,8 @@ void BINARY_SORT_IN(Node* inputNode, Node* currNode){ //Top Down Sort (From Root
   else if(inputNode->returnValue() < currNode->returnValue()){ //Less than Case (Check Left)
     if(currNode->returnLeft() == NULL){
       inputNode->makeParent(currNode);
-      currNode->makeLeft(inputNode);
+      
+currNode->makeLeft(inputNode);
     }
     else{
       currNode = currNode->returnLeft();
@@ -143,8 +192,28 @@ void PRINT(Node* currNode, int count){ //Visually print binary tree
   return;
 }
 
-void SEARCH(Node* currNode, int inputNum){
-  return;
+Node* SEARCH(Node* currNode, int inputNum){
+  if(currNode->returnValue() == inputNum){
+    return currNode;
+  }
+  else if(currNode->returnValue() < inputNum){
+    if(currNode->returnRight() == NULL){
+      return NULL;
+    }
+    else{
+      currNode = currNode->returnRight();
+      SEARCH(currNode, inputNum);
+    }
+  }
+  else if(currNode->returnValue() > inputNum){
+    if(currNode->returnLeft() == NULL){
+      return NULL;
+    }
+    else{
+      currNode = currNode->returnLeft();
+      SEARCH(currNode, inputNum);
+    }
+  }
 }
 
 
