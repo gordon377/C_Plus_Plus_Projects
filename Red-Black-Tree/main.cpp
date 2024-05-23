@@ -22,6 +22,29 @@ char CHILD_TYPE(Node* inputNode);
 void ROTATE_LEFT(Node* inputNode);
 void ROTATE_RIGHT(Node* inputNode);
 
+//Deletion-Related Prototypes
+Node* FIND_IN_ORDER_SUCCESSOR(Node* N); //Finds the left most child of the right subtree
+Node* FIND_SIBLING(Node* N);
+Node* FIND_CLOSE_NEPHEW(Node* N);
+Node* FIND_DISTANT_NEPHEW(Node* N); //Might be useful to have a find parent as well?
+Node* FIND_PARENT(Node* N); //Added for the sake of consistency
+
+void EVAL_RELATIONS(Node* N, Node* & C, Node* & D, Node* & S, Node* & P);
+
+void D1();
+
+void D2(Node* & N, Node* S, Node* C, Node* D, Node* P);
+
+void D3(Node* N, Node* S, Node* C, Node* D, Node* P);
+
+void D4(Node* N, Node* S, Node* C, Node* D, Node* P);
+
+void D5(Node* N, Node* S, Node* C, Node* D, Node* P);
+
+void D6(Node* N, NOde* S, Node* C, Node* D, Node* P);
+
+void DELETE(Node* N);
+
 
 int main(){
   bool active = true;
@@ -121,6 +144,7 @@ int main(){
       cin.clear();
       cin.ignore(10000, '\n');
       cout << "WORK IN PROGRESS" << endl;
+      DELETE(SEARCH(rootNode, inputValue));
     }
     else if(strcmp(input, "QUIT") == 0){
       active = false;
@@ -418,4 +442,158 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* &rootNode){
   }
 
   return;
+}
+
+Node* FIND_SIBLING(Node* N){
+  if(CHILD_TYPE(N) == 'L'){
+    return N->returnParent()->returnRight();
+  }
+  else if(CHILD_TYPE(N) == 'R'){
+    return N->returnParent()->returnLeft();
+  }
+  else{
+    return NULL;
+  }
+}
+
+Node* FIND_CLOSE_NEPHEW(Node* N){
+  if(CHILD_TYPE(N) == 'L'){
+    return FIND_SIBLING(N)->returnLeft();
+  }
+  else if(CHILD_TYPE(N) == 'R'){
+    return FIND_SIBLING(N)->returnRight();
+  }
+  else{
+    return NULL;
+  }
+}
+
+Node* FIND_DISTANT_NEPHEW(Node* N){
+  if(CHILD_TYPE(N) == 'L'){
+    return FIND_SIBLING(N)->returnRight();
+  }
+  else if(CHILD_TYPE(N) == 'R'){
+    return FIND_SIBLING(N)->returnLeft();
+  }
+  else{
+    return NULL;
+  }
+}
+
+Node* FIND_PARENT(Node* N){
+  return N->returnParent();
+}
+
+void EVAL_RELATIONS(Node* N, Node* & C, Node* & D, Node* & S, Node* & P){
+  P = FIND_PARENT(N);
+  S = FIND_SIBLING(N);
+  C = FIND_CLOSE_NEPHEW(N);
+  D = FIND_DISTANT_NEPHEW(N);
+  return;
+}
+
+void D1(){
+  cout << "DEBUG: N is Root | Tree No Longer Exists" << endl;
+  return;
+}
+
+void D2(Node* & N, Node* S, Node* C, Node* D, Node* P){
+  S->recolor();
+  N = P;
+  //Continue from here  (loop) in main Delete function (recheck cases & check if N becomes NULL)
+  DELETE(N);
+  return;
+}
+
+void D3(Node* N, Node* S, Node* C, Node* D, Node* P){
+  if(CHILD_TYPE(N) == 'L'){
+    ROTATE_LEFT(P);
+  }
+  else if(CHILD_TYPE(N) == 'R'){
+    ROTATE_RIGHT(P);
+  }
+  P->recolor();
+  S->recolor();
+  if(D != NULL && D->returnRed() == true){
+    D6(N);
+  }
+  else if(C != NULL && C->returnRed() == true){
+    D5(N);
+  }
+  else{ //What is C & D are NULL?
+    D4(N);
+  }
+  return;
+}
+
+void D4(Node* N, Node* S, Node* C, Node* D, Node* P){
+  if(S->returnRed() != P->returnRed()){
+    S->recolor();
+    P->recolor();
+  }
+  return;
+}
+
+void D5(Node* N, Node* & S, Node* & C, Node* & D, Node* & P){
+  if(CHILD_TYPE(S) == 'L'){
+    ROTATE_LEFT(S);
+  }
+  else if(CHILD_TYPE(S) == 'R'){
+    ROTATE_RIGHT(S);
+  }
+  if(S->returnRed() != C->returnRed()){
+    S->recolor();
+    C->recolor();
+  }
+  EVAL_RELATIONS(Node* N, Node* & C, Node* & D, Node* & S, Node* & P);
+  D6(N, S, C, D, P);
+  return;
+}
+
+void D6(Node* N, Node* S, Node* C, Node* D, Node* P){
+  if(CHILD_TYPE(N) == 'L'){
+    ROTATE_LEFT(P);
+  }
+  else if(CHILD_TYPE(N) == 'R'){
+    ROTATE_RIGHT(P);
+  }
+  if(S->returnRed() != P->returnRed()){
+    S->recolor();
+    P->recolor();
+  }
+  D->recolor(); //D is now set to black
+  return;
+}
+
+Node* FIND_IN_ORDER_SUCCESSOR(Node* N){
+  Node* currNode = N->returnRight();
+  while(currNode->returnLeft() != NULL){
+    currNode = currNode->returnLeft();
+  }
+  return currNode;
+}
+
+void DELETE(Node* N){ //I'm less deleting the data, more cutting the node out of the tree, is this valid?
+  Node* S = FIND_SIBLING(N);
+  Node* C = FIND_CLOSE_NEPHEW(N);
+  Node* D = FIND_DISTANT_NEPHEW(N);
+  Node* P = FIND_PARENT(N);
+  
+  if(N->returnLeft() != NULL && N->returnRight() != NULL){ //Case 0 | N has two non-NULL children
+    Node* tempNode = FIND_IN_ORDER_SUCCESSOR(N);
+    N->makeValue(tempNode->returnValue);
+    if(tempNode->returnRight() == NULL){
+      return;
+    }
+    else{
+      if(CHILD_TYPE(tempNode) == 'L'){
+	tempNode->returnParent()->makeLeft(tempNode->returnRight());
+      }
+      else if(CHILD_TYPE(tempNode) == 'R'){
+	tempNode->returnParent()->makeRight(tempNode->returnRight());
+      }
+      tempNode->returnRight()->makeParent(tempNode->returnParent());
+      return;
+    }
+  }
 }
