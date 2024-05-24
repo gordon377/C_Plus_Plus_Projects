@@ -29,21 +29,22 @@ Node* FIND_CLOSE_NEPHEW(Node* N);
 Node* FIND_DISTANT_NEPHEW(Node* N); //Might be useful to have a find parent as well?
 Node* FIND_PARENT(Node* N); //Added for the sake of consistency
 
-void EVAL_RELATIONS(Node* N, Node* & C, Node* & D, Node* & S, Node* & P);
+void EVAL_RELATIONS(Node* N, Node* & S, Node* & C, Node* & D, Node* & P);
 
-void D1();
+void D1(Node* & rootNode);
 
-void D2(Node* & N, Node* S, Node* C, Node* D, Node* P);
+void D2(Node* N, Node* S, Node* C, Node* D, Node* P, Node* & rootNode);
 
 void D3(Node* N, Node* S, Node* C, Node* D, Node* P);
 
 void D4(Node* N, Node* S, Node* C, Node* D, Node* P);
 
-void D5(Node* N, Node* S, Node* C, Node* D, Node* P);
+void D5(Node* N, Node* & S, Node* & C, Node* & D, Node* & P);
 
-void D6(Node* N, NOde* S, Node* C, Node* D, Node* P);
+void D6(Node* N, Node* S, Node* C, Node* D, Node* P);
 
-void DELETE(Node* N, Node* & rootNode);
+void DELETE_REARRANGE(Node* N, Node* & rootNode);
+void DELETE_STITCH_UP(Node* N);
 
 
 int main(){
@@ -135,7 +136,6 @@ int main(){
       }
       else{
 	cout << "That number is not in the tree!" << endl;
-
       }
     }
     else if(strcmp(input, "REMOVENUM") == 0){
@@ -143,8 +143,14 @@ int main(){
       cin >> inputValue;
       cin.clear();
       cin.ignore(10000, '\n');
-      cout << "WORK IN PROGRESS" << endl;
-      DELETE(SEARCH(rootNode, inputValue), rootNode);
+      if(SEARCH(rootNode, inputValue) != NULL){
+	DELETE_REARRANGE(SEARCH(rootNode, inputValue), rootNode);
+	//DELETE_STITCH_UP(SEARCH(rootNode, inputValue)); Instead, stitch up manually?
+	cout << "DELETION COMPLETED" << endl;
+      }
+      else{
+	cout << "That value isn't in the tree to begin with!" << endl;
+      }
     }
     else if(strcmp(input, "QUIT") == 0){
       active = false;
@@ -152,9 +158,7 @@ int main(){
     else{
       cout << "Invalid Input" << endl;
     }
-  }
-  
-
+  } 
   return 0;
 }
 
@@ -356,7 +360,7 @@ void ROTATE_RIGHT(Node* inputNode){
   return;
 }
 
-void RED_BLACK_SORT_IN(Node* inputNode, Node* &rootNode){
+ void RED_BLACK_SORT_IN(Node* inputNode, Node* &rootNode){
   if(inputNode->returnParent() != NULL){
     if(inputNode->returnParent()->returnRed() == true){
  
@@ -442,7 +446,7 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* &rootNode){
       }
     }
   }
-  }
+    }
   }
   else{
     cout << "No Case Fit" << endl;
@@ -502,16 +506,17 @@ void EVAL_RELATIONS(Node* N, Node* & C, Node* & D, Node* & S, Node* & P){
   return;
 }
 
-void D1(){
+void D1(Node* &rootNode){
   cout << "DEBUG: N is Root | Tree No Longer Exists" << endl;
+  rootNode = NULL;
   return;
 }
 
-void D2(Node* & N, Node* S, Node* C, Node* D, Node* P){
+void D2(Node* N, Node* S, Node* C, Node* D, Node* P, Node* & rootNode){
   S->recolor();
   N = P;
-  //Continue from here  (loop) in main Delete function (recheck cases & check if N becomes NULL)
-  DELETE(N);
+  //Continue from here (loop) in main Delete function (recheck cases & check if N becomes NULL)
+  DELETE_REARRANGE(N, rootNode);
   return;
 }
 
@@ -525,13 +530,13 @@ void D3(Node* N, Node* S, Node* C, Node* D, Node* P){
   P->recolor();
   S->recolor();
   if(D != NULL && D->returnRed() == true){
-    D6(N);
+    D6(N, S, C, D, P);
   }
   else if(C != NULL && C->returnRed() == true){
-    D5(N);
+    D5(N, S, C, D, P);
   }
   else{ //What is C & D are NULL?
-    D4(N);
+    D4(N, S, C, D, P);
   }
   return;
 }
@@ -555,7 +560,7 @@ void D5(Node* N, Node* & S, Node* & C, Node* & D, Node* & P){
     S->recolor();
     C->recolor();
   }
-  EVAL_RELATIONS(Node* N, Node* & C, Node* & D, Node* & S, Node* & P);
+  EVAL_RELATIONS(N, S, C, D, P);
   D6(N, S, C, D, P);
   return;
 }
@@ -583,35 +588,36 @@ Node* FIND_IN_ORDER_SUCCESSOR(Node* N){
   return currNode;
 }
 
-void DELETE(Node* N){ //I'm less deleting the data, more cutting the node out of the tree, is this valid?
+void DELETE_REARRANGE(Node* N, Node* & rootNode){ //I'm less deleting the data, more cutting the node out of the tree, is this valid?
+  cout << "DELETION_REARRANGE STARTED" << endl;
   Node* S = FIND_SIBLING(N);
   Node* C = FIND_CLOSE_NEPHEW(N);
   Node* D = FIND_DISTANT_NEPHEW(N);
   Node* P = FIND_PARENT(N);
   
-  if(N->returnLeft() != NULL && N->returnRight() != NULL){ //Case 0 | N has two non-NULL children
+  if(N->returnLeft() != NULL && N->returnRight() != NULL){ //Case 0 | N has two non-NULL children | Verified
+    cout << "ENTER DELETION CASE 0" << endl;
     Node* tempNode = FIND_IN_ORDER_SUCCESSOR(N);
-    N->makeValue(tempNode->returnValue);
+    cout << tempNode->returnValue() << endl;
+    N->makeValue(tempNode->returnValue());
     if(tempNode->returnRight() == NULL){
+      tempNode->returnParent()->makeLeft(NULL);
       return;
     }
     else{
-      if(CHILD_TYPE(tempNode) == 'L'){
-	tempNode->returnParent()->makeLeft(tempNode->returnRight());
-      }
-      else if(CHILD_TYPE(tempNode) == 'R'){
-	tempNode->returnParent()->makeRight(tempNode->returnRight());
-      }
+      tempNode->returnParent()->makeLeft(tempNode->returnRight());
       tempNode->returnRight()->makeParent(tempNode->returnParent());
-      return;
     }
+    return;
   }
-  else if((N->returnLeft() != NULL && N->returnRight() == NULL) || (N->returnLeft() == NULL && N->returnRight() != NULL)){ //Case 1 | N has only one non-NULL child
+  else if((N->returnLeft() != NULL && N->returnRight() == NULL) || (N->returnLeft() == NULL && N->returnRight() != NULL)){ //Case 1 | N has only one non-NULL child | Verified
+    cout << "ENTER DELETION CASE 1" << endl;
+    Node* tempNode = new Node();
     if(N->returnLeft() != NULL){
-      Node* tempNode = N->returnLeft();
+      tempNode = N->returnLeft();
     }
     else if(N->returnRight() != NULL){
-      Node* tempNode = N->returnRight();
+      tempNode = N->returnRight();
     }
     if(CHILD_TYPE(N) == 'L'){
       P->makeLeft(tempNode);
@@ -622,10 +628,13 @@ void DELETE(Node* N){ //I'm less deleting the data, more cutting the node out of
     tempNode->makeParent(P);
     tempNode->recolor(); //Color Child Black
   }
-  else if(P == NULL && N->returnRight() == NULL && N->returnLeft() == NULL){ //Case 2 | N is root & has no children
-    rootNode == NULL; //Tree is now functionally empty
+  else if(P == NULL && N->returnRight() == NULL && N->returnLeft() == NULL){ //Case 2 | N is root & has no children | Verified
+    cout << "ENTER DELETION CASE 2" << endl;
+    rootNode = NULL; //Tree is now functionally empty
+    return;
   }
-  else if(N->returnRed() == true && N->returnRight() == NULL && N->returnLeft() == NULL){ //Case 3 | N is red & has no children
+  else if(N->returnRed() == true && N->returnRight() == NULL && N->returnLeft() == NULL){ //Case 3 | N is red & has no children | Verified
+    cout << "ENTER DELETION CASE 3" << endl;
     if(CHILD_TYPE(N) == 'L'){
       P->makeLeft(NULL);
     }
@@ -633,8 +642,56 @@ void DELETE(Node* N){ //I'm less deleting the data, more cutting the node out of
       P->makeRight(NULL);
     }
     N->makeParent(NULL);
+    return;
   }
-  else if(N->returnRed() == false && N->returnRigth() == NULL && N->returnLeft() == NULL){ //Case 4 (Complex Case) | N is black & has no children
-
+  else if(N->returnRed() == false && N->returnRight() == NULL && N->returnLeft() == NULL){ //Case 4 (Complex Case) | N is black & has no children
+    cout << "ENTER DELETION CASE 4" << endl;
+    if(P == NULL && C == NULL && S == NULL && D == NULL){ //Case D1 | P, C, S, & D don't exist (N is root) | Already covered by Case 2...
+      cout << "ENTER D1" << endl;
+      D1(rootNode);
+    }
+    else if(P->returnRed() == false && S->returnRed() == false &&  C->returnRed() == false && D->returnRed() == false){ //Case D2 | P, S, C, & D are black
+      cout << "ENTER D2" << endl;
+      D2(N, S, C, D, P, rootNode);
+    }
+    else if(S->returnRed() == true){ //Case D3 | S is red, therfore P, C, & D are black
+      cout << "ENTER D3" << endl;
+      D3(N, S, C, D, P);
+    }
+    else if(S->returnRed() == false && C->returnRed() == false && D->returnRed() == false && P->returnRed() == true){ //Case D4 | P is red & S, C, & D are black
+      cout << "ENTER D4" << endl;
+      D4(N, S, C, D, P);
+    }
+    else if(S->returnRed() == false && C->returnRed() == true && D->returnRed() == false){ //Case D5 | S is black, C is red, & D is black
+      cout << "ENTER D5" << endl;
+      D5(N, S, C, D, P);
+    }
+    else if(S->returnRed() == false && D->returnRed() == true){ //Case D6 | S is black & D is red
+      cout << "ENTER D6" << endl;
+      D6(N, S, C, D, P);
+    }
+    else{
+      cout << "DEBUG: ERROR | COMPLEX DELETION CASE" << endl;
+    }
   }
 }
+
+void DELETE_STITCH_UP(Node* N){
+  cout << "DELETE_STITCH_UP STARTED" << endl;
+  if(N->returnParent() == NULL){
+    cout << "DEBUG: DELETE_STITCH_UP | NO PARENT" << endl;
+    return;
+  }
+  if(CHILD_TYPE(N) == 'L'){
+    N->returnParent()->makeLeft(NULL);
+  }
+  else if(CHILD_TYPE(N) == 'R'){
+    N->returnParent()->makeRight(NULL);
+  }
+  else{
+    cout << "DEBUG: DELETE_STITCH_UP | ERROR" << endl;
+  }
+  return;
+}
+
+
