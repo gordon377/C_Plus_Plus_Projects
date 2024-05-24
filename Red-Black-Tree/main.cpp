@@ -11,7 +11,7 @@ using namespace std;
 
 //Function Prototypes
 
-void PRINT(Node* currNode, int count);
+void PRINT(Node* currNode, int count, Node* rootNode, bool &active);
 Node* SEARCH(Node* currNode, int inputNum);
 
 //Insertion-Related Prototypes
@@ -43,7 +43,7 @@ void D5(Node* N, Node* S, Node* C, Node* D, Node* P);
 
 void D6(Node* N, NOde* S, Node* C, Node* D, Node* P);
 
-void DELETE(Node* N);
+void DELETE(Node* N, Node* & rootNode);
 
 
 int main(){
@@ -81,10 +81,10 @@ int main(){
 	cout << "NO PARENT" << endl;
       }
       cout << "------------PRE RED BLACK SORT PRINT--------------" << endl;
-      PRINT(rootNode, count);
+      PRINT(rootNode, count, rootNode, active);
       RED_BLACK_SORT_IN(tempNode, rootNode);
       cout << "------------POST RED BLACK SORT PRINT-------------" << endl;
-      PRINT(rootNode, count);
+      PRINT(rootNode, count, rootNode, active);
     }
   }
   else if(strcmp(input, "FILE") == 0){
@@ -94,17 +94,17 @@ int main(){
       tempNode->makeValue(inputValue);
       BINARY_SORT_IN(tempNode, rootNode);
       cout << "------------PRE RED BLACK SORT PRINT--------------" << endl;
-      PRINT(rootNode, count);
+      PRINT(rootNode, count, rootNode, active);
       RED_BLACK_SORT_IN(tempNode, rootNode);
       cout << "------------POST RED BLACK SORT PRINT-------------" << endl;
-      PRINT(rootNode, count);
+      PRINT(rootNode, count, rootNode, active);
     }
   }
 
   cout << "DEBUG: INITIAL INSERTIONS FINISHED" << endl;
   cout << "------------------FINAL INSERTION PRINT-------------------" << endl;
   
-  PRINT(rootNode, count);
+  PRINT(rootNode, count, rootNode, active);
 
   cout << "------------------FINAL INSERTION PRINT FINISHED---------------------" << endl;
 
@@ -113,7 +113,7 @@ int main(){
     cout << "\n Enter one of the following commands: PRINT, ADDNUM, REMOVENUM, SEARCH, QUIT" << endl;
     cin >> input;
     if(strcmp(input, "PRINT") == 0){
-      PRINT(rootNode, count);
+      PRINT(rootNode, count, rootNode, active);
       cout << "DEBUG: PRINT FINISHED" << endl;
     }
     else if(strcmp(input, "ADDNUM") == 0){
@@ -144,7 +144,7 @@ int main(){
       cin.clear();
       cin.ignore(10000, '\n');
       cout << "WORK IN PROGRESS" << endl;
-      DELETE(SEARCH(rootNode, inputValue));
+      DELETE(SEARCH(rootNode, inputValue), rootNode);
     }
     else if(strcmp(input, "QUIT") == 0){
       active = false;
@@ -196,24 +196,31 @@ currNode->makeLeft(inputNode);
   return;
 }
 
-void PRINT(Node* currNode, int count){ //Visually print binary tree
-  if(currNode->returnRight() != NULL){ //Check Right
-    PRINT(currNode->returnRight(), count+1);
+void PRINT(Node* currNode, int count, Node* rootNode, bool &active){ //Visually print binary tree
+  if(rootNode == NULL){
+    cout << "Empty tree! Run the Program Again Remake the Tree" << endl;
+    active = false;
+    return;
   }
-  for(int i = 0; i < count; i++){ //Tabs (tree level)
-    cout << '\t';
+  else{
+    if(currNode->returnRight() != NULL){ //Check Right
+      PRINT(currNode->returnRight(), count+1, rootNode, active);
+    }
+    for(int i = 0; i < count; i++){ //Tabs (tree level)
+      cout << '\t';
+    }
+    cout << currNode->returnValue(); //Output (Numeric and Red/Black Value)
+    if(currNode->returnRed() == true){
+      cout << " (RED)" << endl;
+    }
+    else if(currNode->returnRed() == false){
+      cout << " (BLACK)" << endl;
+    }
+    if(currNode->returnLeft() != NULL){ //Check Left
+      PRINT(currNode->returnLeft(), count+1, rootNode, active);
+    }
+    return;
   }
-  cout << currNode->returnValue(); //Output (Numeric and Red/Black Value)
-  if(currNode->returnRed() == true){
-    cout << " (RED)" << endl;
-  }
-  else if(currNode->returnRed() == false){
-    cout << " (BLACK)" << endl;
-  }
-  if(currNode->returnLeft() != NULL){ //Check Left
-    PRINT(currNode->returnLeft(), count+1);
-  }
-  return;
 }
 
 Node* SEARCH(Node* currNode, int inputNum){
@@ -445,6 +452,9 @@ void RED_BLACK_SORT_IN(Node* inputNode, Node* &rootNode){
 }
 
 Node* FIND_SIBLING(Node* N){
+  if(N->returnParent() == NULL){
+    return NULL;
+  }
   if(CHILD_TYPE(N) == 'L'){
     return N->returnParent()->returnRight();
   }
@@ -457,10 +467,10 @@ Node* FIND_SIBLING(Node* N){
 }
 
 Node* FIND_CLOSE_NEPHEW(Node* N){
-  if(CHILD_TYPE(N) == 'L'){
+  if(CHILD_TYPE(N) == 'L' && FIND_SIBLING(N) != NULL){
     return FIND_SIBLING(N)->returnLeft();
   }
-  else if(CHILD_TYPE(N) == 'R'){
+  else if(CHILD_TYPE(N) == 'R' && FIND_SIBLING(N) != NULL){
     return FIND_SIBLING(N)->returnRight();
   }
   else{
@@ -469,10 +479,10 @@ Node* FIND_CLOSE_NEPHEW(Node* N){
 }
 
 Node* FIND_DISTANT_NEPHEW(Node* N){
-  if(CHILD_TYPE(N) == 'L'){
+  if(CHILD_TYPE(N) == 'L' && FIND_SIBLING(N) != NULL){
     return FIND_SIBLING(N)->returnRight();
   }
-  else if(CHILD_TYPE(N) == 'R'){
+  else if(CHILD_TYPE(N) == 'R' && FIND_SIBLING(N) != NULL){
     return FIND_SIBLING(N)->returnLeft();
   }
   else{
@@ -595,5 +605,36 @@ void DELETE(Node* N){ //I'm less deleting the data, more cutting the node out of
       tempNode->returnRight()->makeParent(tempNode->returnParent());
       return;
     }
+  }
+  else if((N->returnLeft() != NULL && N->returnRight() == NULL) || (N->returnLeft() == NULL && N->returnRight() != NULL)){ //Case 1 | N has only one non-NULL child
+    if(N->returnLeft() != NULL){
+      Node* tempNode = N->returnLeft();
+    }
+    else if(N->returnRight() != NULL){
+      Node* tempNode = N->returnRight();
+    }
+    if(CHILD_TYPE(N) == 'L'){
+      P->makeLeft(tempNode);
+    }
+    else if(CHILD_TYPE(N) == 'R'){
+      P->makeRight(tempNode);
+    }
+    tempNode->makeParent(P);
+    tempNode->recolor(); //Color Child Black
+  }
+  else if(P == NULL && N->returnRight() == NULL && N->returnLeft() == NULL){ //Case 2 | N is root & has no children
+    rootNode == NULL; //Tree is now functionally empty
+  }
+  else if(N->returnRed() == true && N->returnRight() == NULL && N->returnLeft() == NULL){ //Case 3 | N is red & has no children
+    if(CHILD_TYPE(N) == 'L'){
+      P->makeLeft(NULL);
+    }
+    else if(CHILD_TYPE(N) == 'R'){
+      P->makeRight(NULL);
+    }
+    N->makeParent(NULL);
+  }
+  else if(N->returnRed() == false && N->returnRigth() == NULL && N->returnLeft() == NULL){ //Case 4 (Complex Case) | N is black & has no children
+
   }
 }
