@@ -514,9 +514,16 @@ void D1(Node* &rootNode){
 
 void D2(Node* N, Node* S, Node* C, Node* D, Node* P, Node* & rootNode){
   S->recolor();
+  cout << "DEBUG 1" << endl;
   N = P;
+  cout << "DEBUG 2" << endl;
+  EVAL_RELATIONS(N, S, C, D, P);
+  cout << "DEBUG 3" << endl;
   //Continue from here (loop) in main Delete function (recheck cases & check if N becomes NULL)
-  DELETE_REARRANGE(N, rootNode);
+  if(S != NULL){
+    cout << S->returnValue() << endl;
+    DELETE_REARRANGE(N, rootNode);
+  }
   return;
 }
 
@@ -600,9 +607,12 @@ void DELETE_REARRANGE(Node* N, Node* & rootNode){ //I'm less deleting the data, 
     Node* tempNode = FIND_IN_ORDER_SUCCESSOR(N);
     cout << tempNode->returnValue() << endl;
     N->makeValue(tempNode->returnValue());
-    if(tempNode->returnRight() == NULL){
+    if(tempNode->returnRight() == NULL && tempNode != N->returnRight()){
       tempNode->returnParent()->makeLeft(NULL);
       return;
+    }
+    else if(tempNode == N->returnRight() && tempNode->returnRight() == NULL){
+      N->makeRight(NULL);
     }
     else{
       tempNode->returnParent()->makeLeft(tempNode->returnRight());
@@ -644,13 +654,20 @@ void DELETE_REARRANGE(Node* N, Node* & rootNode){ //I'm less deleting the data, 
     N->makeParent(NULL);
     return;
   }
-  else if(N->returnRed() == false && N->returnRight() == NULL && N->returnLeft() == NULL){ //Case 4 (Complex Case) | N is black & has no children
+  else if(N->returnRed() == false && N->returnRight() == NULL && N->returnLeft() == NULL){ //Case 4 (Complex Case) | N is black & has no children (Black Leaf)
     cout << "ENTER DELETION CASE 4" << endl;
-    if(P == NULL && C == NULL && S == NULL && D == NULL){ //Case D1 | P, C, S, & D don't exist (N is root) | Already covered by Case 2...
+    if(CHILD_TYPE(N) == 'L'){
+      P->makeLeft(NULL);
+    }
+    else if(CHILD_TYPE(N) == 'R'){
+      P->makeRight(NULL);
+    }
+    if(P == NULL){ //Case D1 | P, C, S, & D don't exist (N is root) | Already covered by Case 2...
       cout << "ENTER D1" << endl;
       D1(rootNode);
     }
-    else if(P->returnRed() == false && S->returnRed() == false &&  C->returnRed() == false && D->returnRed() == false){ //Case D2 | P, S, C, & D are black
+    //What if S == NULL... || S is guaranteed to exist due to red black properties?
+    else if((P->returnRed() == false && S->returnRed() == false) && ((C == NULL && D == NULL) || (C->returnRed() == false && D->returnRed() == false))){ //Case D2 | P, S, C, & D are black
       cout << "ENTER D2" << endl;
       D2(N, S, C, D, P, rootNode);
     }
