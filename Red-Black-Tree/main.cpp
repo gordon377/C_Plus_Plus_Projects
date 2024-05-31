@@ -33,7 +33,7 @@ void EVAL_RELATIONS(Node* N, Node* & S, Node* & C, Node* & D, Node* & P);
 
 void D1(Node* & rootNode);
 
-void D2(Node* N, Node* S, Node* C, Node* D, Node* P, Node* & rootNode);
+void D2(Node* & N, Node* & S, Node* & C, Node* & D, Node* & P, Node* & rootNode);
 
 void D3(Node* N, Node* S, Node* C, Node* D, Node* P);
 
@@ -46,6 +46,9 @@ void D6(Node* N, Node* S, Node* C, Node* D, Node* P);
 void DELETE_REARRANGE(Node* N, Node* & rootNode);
 void DELETE_STITCH_UP(Node* N);
 
+void COMPLEX_CASE(Node* & N, Node* & S, Node* & C, Node* & D, Node* & P, Node* & rootNode);
+
+bool returnRed(Node* node);
 
 int main(){
   bool active = true;
@@ -456,6 +459,7 @@ void ROTATE_RIGHT(Node* inputNode){
 }
 
 Node* FIND_SIBLING(Node* N){
+  cout << "FIND SIBLING VALUE DEBUG: Node value is " << N->returnValue() << endl;
   if(N->returnParent() == NULL){
     return NULL;
   }
@@ -512,17 +516,24 @@ void D1(Node* &rootNode){
   return;
 }
 
-void D2(Node* N, Node* S, Node* C, Node* D, Node* P, Node* & rootNode){
+void D2(Node* & N, Node* & S, Node* & C, Node* & D, Node* & P, Node* & rootNode){
   S->recolor();
   cout << "DEBUG 1" << endl;
   N = P;
   cout << "DEBUG 2" << endl;
-  EVAL_RELATIONS(N, S, C, D, P);
+  //EVAL_RELATIONS(N, S, C, D, P);
+  P = FIND_PARENT(N);
+  S = FIND_SIBLING(N);
+  C = FIND_CLOSE_NEPHEW(N);
+  D = FIND_DISTANT_NEPHEW(N);
+  cout << "Node Value: " << N->returnValue() << endl;
+  cout << "Parent Value: " << P->returnValue() << endl;
+  cout << "Sibling Value: " << S->returnValue() << endl;
   cout << "DEBUG 3" << endl;
   //Continue from here (loop) in main Delete function (recheck cases & check if N becomes NULL)
   if(S != NULL){
     cout << S->returnValue() << endl;
-    DELETE_REARRANGE(N, rootNode);
+    COMPLEX_CASE(N, S, C, D, P, rootNode);
   }
   return;
 }
@@ -662,34 +673,7 @@ void DELETE_REARRANGE(Node* N, Node* & rootNode){ //I'm less deleting the data, 
     else if(CHILD_TYPE(N) == 'R'){
       P->makeRight(NULL);
     }
-    if(P == NULL){ //Case D1 | P, C, S, & D don't exist (N is root) | Already covered by Case 2...
-      cout << "ENTER D1" << endl;
-      D1(rootNode);
-    }
-    //What if S == NULL... || S is guaranteed to exist due to red black properties?
-    else if((P->returnRed() == false && S->returnRed() == false) && ((C == NULL && D == NULL) || (C->returnRed() == false && D->returnRed() == false))){ //Case D2 | P, S, C, & D are black
-      cout << "ENTER D2" << endl;
-      D2(N, S, C, D, P, rootNode);
-    }
-    else if(S->returnRed() == true){ //Case D3 | S is red, therfore P, C, & D are black
-      cout << "ENTER D3" << endl;
-      D3(N, S, C, D, P);
-    }
-    else if(S->returnRed() == false && C->returnRed() == false && D->returnRed() == false && P->returnRed() == true){ //Case D4 | P is red & S, C, & D are black
-      cout << "ENTER D4" << endl;
-      D4(N, S, C, D, P);
-    }
-    else if(S->returnRed() == false && C->returnRed() == true && D->returnRed() == false){ //Case D5 | S is black, C is red, & D is black
-      cout << "ENTER D5" << endl;
-      D5(N, S, C, D, P);
-    }
-    else if(S->returnRed() == false && D->returnRed() == true){ //Case D6 | S is black & D is red
-      cout << "ENTER D6" << endl;
-      D6(N, S, C, D, P);
-    }
-    else{
-      cout << "DEBUG: ERROR | COMPLEX DELETION CASE" << endl;
-    }
+    COMPLEX_CASE(N, S, C, D, P, rootNode);
   }
 }
 
@@ -709,6 +693,46 @@ void DELETE_STITCH_UP(Node* N){
     cout << "DEBUG: DELETE_STITCH_UP | ERROR" << endl;
   }
   return;
+}
+
+void COMPLEX_CASE(Node* & N, Node* & S, Node* & C, Node* & D, Node* & P, Node* & rootNode){
+  if(P == NULL){ //Case D1 | P, C, S, & D don't exist (N is root) | Already covered by Case 2...
+    cout << "ENTER D1" << endl;
+    D1(rootNode);
+  }
+  //What if S == NULL... || S is guaranteed to exist due to red black properties?
+  else if(returnRed(P) == false && returnRed(S) == false && returnRed(C) == false && returnRed(D) == false){ //Case D2 | P, S, C, & D are black
+    cout << "ENTER D2" << endl;
+    D2(N, S, C, D, P, rootNode);
+  }
+  else if(returnRed(S) == true){ //Case D3 | S is red, therfore P, C, & D are black
+    cout << "ENTER D3" << endl;
+    D3(N, S, C, D, P);
+  }
+  else if(returnRed(S) == false && returnRed(C) == false && returnRed(D) == false && returnRed(P) == true){ //Case D4 | P is red & S, C, & D are black
+    cout << "ENTER D4" << endl;
+    D4(N, S, C, D, P);
+  }
+  else if(returnRed(S) == false && returnRed(C) == true && returnRed(D) == false){ //Case D5 | S is black, C is red, & D is black
+    cout << "ENTER D5" << endl;
+    D5(N, S, C, D, P);
+  }
+  else if(returnRed(S) == false && returnRed(D) == true){ //Case D6 | S is black & D is red
+    cout << "ENTER D6" << endl;
+    D6(N, S, C, D, P);
+  }
+  else{
+    cout << "DEBUG: ERROR | COMPLEX DELETION CASE" << endl;
+  }
+}
+
+bool returnRed(Node* node){ //To account for NULL stuff
+  if(node != NULL){
+    return node->returnRed();
+  }
+  else{
+    return false;
+  }
 }
 
 
