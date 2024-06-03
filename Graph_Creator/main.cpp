@@ -5,3 +5,12 @@
 #include <iostream>
 #include <cstring>
 #include "vtex.h"
+
+using namespace std;
+
+//Function Prototypes
+
+
+int main(){ //main function
+  
+}
