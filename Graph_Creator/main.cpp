@@ -171,8 +171,6 @@ void dijkstra(vtex** grid, int indexCount){
     int nextPos;
     int a;
     int b;
-    int c;
-    int d;
     int startPos = begin->returnIndex();
     int endPos = end->returnIndex();
     for(a = 0; a < tempinC; a__){
@@ -186,6 +184,46 @@ void dijkstra(vtex** grid, int indexCount){
       }
     }
     //Dijkstra's Algorithm
-    
+
+    for(a = 0; a < tempinC; a++){
+      distance[a] = weight[startPos][a];
+      pred[a] = startPos;
+      history[a] = 0;
+    }
+    count = 1;
+    history[startPos] = 1;
+    distance[startPos] = 0;
+    while(count < n-1){
+      minDistance = lim;
+      for(a = 0; a < tempinC; a++){
+	if(!history[a] && distance[a] < minDistace){
+	  minDistace = distance[a];
+	  nextPos = a;
+	}
+      }
+      history[nextPos] = 1;
+      for(a = 0; a < tempinC; a++){
+	if(!history[i]){
+	  if(minDistance + weight[nextPos][i] < distance [i]){
+	    distance[a] = minDistance+weight[nextPos][a];
+	    pred[i] = nextPos;
+	  }
+	}
+      }
+      count++;
+    }
+    //Print output
+
+    for(a = 0; a < tempinC; a++){
+      if(a == endPos){
+	cout << "Weight/Distance: " << distance[a]; << neld;
+	cout << "Path: " << grid[a]->returnName();
+	b = a;
+	while(b != startPos){
+	  b = pred[b];
+	  cout << " <<--" << grid[b]->returnName();
+	}
+      }
+    }
   }
 }
