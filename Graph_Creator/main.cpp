@@ -283,3 +283,61 @@ void delEdge(vtex** grid, int indexCount){
   cout << "EDGE DELETION FINISHED" << endl;
 }
 
+void addVtex(vtex** grid, int indexCount){
+  char in;
+  //Initilize new vertex
+  vtex* newVtex = new Vtex();
+  newVtex->mkIndex(indexCount);
+  cout << "Enter a character for the new vertex" << endl;
+  cin >> in;
+  cin.clear();
+  newVtex->mkName(in);
+  grid[indexCount] = newVtex;
+  cout << "Vertex " << newVtex->returnName() << "added!" << endl; //Debugging purposes
+}
+
+void delVtex(vtex** grid, int indexCount){
+  if(grid[0] == NULL){
+    cout << "There are no verticies to delete" << endl;
+    return;
+  }
+  char input;
+  cout << "Enter the vertex to be deleted" << endl;
+  cin >> input;
+  cin.clear();
+  vtex* vertex = search(grid, input, indexCount);
+  if(vertex == NULL){
+    cout << "No such vector exists" << endl;
+    return;
+  }
+  int index = vertex->returnIndex();
+  v->~vtex(); //Empty data
+  cout << "DEBUG: Vertex Removed" << endl;
+  //Stitching edge values per vertex
+  for(int row = 0; row < indexCount; row++){
+    vtex* curr = grid[row];
+    for(int edge = index; edge < indexCount; edge++){
+      if(edge == indexCount - 1){
+	curr->mkEdge(edge, 0);
+      }
+      else{ //Iteration step
+	int nextPos = edge+1;
+	curr->mkEdge(edge, curr->returnEdge(nextPos));
+      }
+    }
+    grid[row] = curr;
+  }
+  //Correct grid
+  grid[index] = NULL;
+  //Shift latter elements
+  while(index < indexCount){
+    if(index == IC - 1){
+      grid[index] = NULL;
+      break;
+    }
+    grid[index] = grid[index+1];
+    (grid[index])->mkIndex(index);
+    index++;
+  }
+  cout << "OVERALL DEBUG: VECTOR DELETION FULLY FINISHED" << endl;
+}
