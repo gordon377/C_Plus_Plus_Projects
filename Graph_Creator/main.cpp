@@ -20,7 +20,7 @@ void delVtex(vtex** grid, int indexCount); //Deletes a vertex
 
 //definitions (for convenience) | Colors
 //Resource used: https://gist.github.com/vratiu/9780109
-
+//Use inspired by friends' githubs
 #define RED "\033[31m"
 #define BLUE "\033[34m"
 #define COLOR_OFF "\033[0m"
@@ -31,6 +31,7 @@ int main(){ //main function
   bool active = true;
   char input[20];
   while(active){
+    cout << endl;
     cout << "What would you like to do? COMMANDS: PRINT, FASTESTPATH, ADDEDGE, DELEDGE, ADDVERTEX, DELVERTEX, or QUIT?" << endl;
     cin >> input;
     cin.clear();
@@ -91,8 +92,8 @@ void print(vtex** grid, int indexCount){ //Check over
   int edgeMatrix[20][20];
   int a = 0;
   while(a < indexCount){
-    matrix[0][a+1] = grid[a]->returnName();
-    matrix[a+1][0] = grid[a]->returnName();
+    matrix[0][a+1] = (grid[a])->returnName();
+    matrix[a+1][0] = (grid[a])->returnName();
     a++;
   }
   
@@ -161,9 +162,10 @@ void dijkstra(vtex** grid, int indexCount){
     return;
   }
   else{
+    cout << "DEBUG 0" << endl;
     int tempinC = indexCount;
     int maximum = indexCount;
-    int lim = 9999; //Arbitrarily high value to function as infinity
+    int lim = 99; //Arbitrarily high value to function as infinity
     int pred[lim];
     int weight[lim][lim];
     int distance[lim];
@@ -173,8 +175,12 @@ void dijkstra(vtex** grid, int indexCount){
     int nextPos;
     int a;
     int b;
+    cout << "DEBUG AGAIN" << endl;
     int startPos = beginning->returnIndex();
+    cout << "START POS: " << startPos << endl;
     int endPos = ending->returnIndex();
+    cout << "END POS: " << endPos << endl;
+    cout << "VARIABLE DEBUG" << endl;
     for(a = 0; a < tempinC; a++){
       for(b = 0; b < tempinC; b++){
 	if(grid[a]->returnEdge(b) == 0){
@@ -195,6 +201,7 @@ void dijkstra(vtex** grid, int indexCount){
     count = 1;
     history[startPos] = 1;
     distance[startPos] = 0;
+    cout << "DEBUG 1" << endl;
     while(count < tempinC-1){
       minDistance = lim;
       for(a = 0; a < tempinC; a++){
@@ -204,6 +211,7 @@ void dijkstra(vtex** grid, int indexCount){
 	}
       }
       history[nextPos] = 1;
+      cout << "DEBUG 2" << endl;
       for(a = 0; a < tempinC; a++){
 	if(!history[a]){
 	  if(minDistance + weight[nextPos][a] < distance[a]){
@@ -216,6 +224,7 @@ void dijkstra(vtex** grid, int indexCount){
     }
     //Print output
 
+    cout << "DEBUG 3" << endl;
     for(a = 0; a < tempinC; a++){
       if(a == endPos){
 	cout << "Weight/Distance: " << distance[a] << endl;
