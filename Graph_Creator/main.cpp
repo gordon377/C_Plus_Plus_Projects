@@ -227,12 +227,17 @@ void dijkstra(vtex** grid, int indexCount){
     cout << "DEBUG 3" << endl;
     for(a = 0; a < tempinC; a++){
       if(a == endPos){
-	cout << "Weight/Distance: " << distance[a] << endl;
-	cout << "Path: " << grid[a]->returnName();
-	b = a;
-	while(b != startPos){
-	  b = pred[b];
-	  cout << "<<--" << grid[b]->returnName();
+	if(distance[a] == lim){
+	  cout << "No path exists | Weight Limit Reached" << endl;
+	}
+	else{
+	  cout << "Weight/Distance: " << distance[a] << endl;
+	  cout << "Path: " << grid[a]->returnName();
+	  b = a;
+	  while(b != startPos){
+	    b = pred[b];
+	    cout << "<<--" << grid[b]->returnName();
+	  }
 	}
       }
     }
