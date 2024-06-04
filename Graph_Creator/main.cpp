@@ -78,7 +78,7 @@ vtex* search(vtex** grid, char input, int indexCount){
   return NULL; //DNE
 }
 
-void print(vtex** gird, int indexCount){
+void print(vtex** gird, int indexCount){ //Check over
   char matrix[21][21];
   for(int row = 0; row < 21; row++){    
     for(int column = 0; column < 21; column++){
@@ -131,5 +131,61 @@ void print(vtex** gird, int indexCount){
 	cout << matrix[row][column] << '\t';
       }
     }
+    if(matrix[row+1][0] == ' '){ //Edge Case
+      break;
+    }
+  }
+}
+
+void dijkstra(vtex** grid, int indexCount){
+  if(grid[0] == NULL || grid[1] == NULL){ //Edge Case
+    cout << "Less than two verticies" << endl;
+    return;
+  }
+  char begin;
+  char end;
+
+  cout << "Enter Start Vertex" << endl;
+  cin >> begin;
+  cin.clear();
+  cout << "Enter End Vertex" << endl;
+  cin >> end;
+  cin.clear();
+
+  vtex* beginning = search(grid, begin, indexCount);
+  vtex* end = search(grid, end, indexCount);
+  if(begin == NULL || end == NULL){
+    cout << "Those verticies don't exist" << endl;
+    return;
+  }
+  else{
+    int tempinC = indexCount;
+    int maximum = indexCount;
+    int lim = 9999; //Arbitrarily high value to function as infinity
+    int pred[lim];
+    int weight[lim][lim];
+    int distance[lim];
+    int history[lim];
+    int count;
+    int minDistance;
+    int nextPos;
+    int a;
+    int b;
+    int c;
+    int d;
+    int startPos = begin->returnIndex();
+    int endPos = end->returnIndex();
+    for(a = 0; a < tempinC; a__){
+      for(b = 0; b < tempinC; b++){
+	if(grid[a]->returnEdge(b) == 0){
+	  weight[a][b] = lim;
+	}
+	else{
+	  weight[a][b] = grid[a]->returnEdge(b);
+	}
+      }
+    }
+    //Dijkstra's Algorithm
+    
   }
 }
