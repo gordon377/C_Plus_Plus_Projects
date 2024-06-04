@@ -227,3 +227,39 @@ void dijkstra(vtex** grid, int indexCount){
     }
   }
 }
+
+void addEdge(vtex **grid, int indexCount){
+  if(grid[1] == NULL || grid[0] == NULL){ //Two verticies check
+    cout << "Need two verticies" << endl;
+    return;
+  }
+  char in1;
+  char in2;
+  int num;
+  cout << "Enter the first vertex this edge will be added to" << endl;
+  cin >> in1;
+  cin.clear();
+  cout << "Now enter the second vertex" << endl;
+  cin >> in2;
+  cin.clear();
+  //Pre-processing
+  vtex* vertex1 = search(grid, in1, inputCount);
+  vtex* vertex2 = search(grid, in2, inputCount);
+  if(vertex1 == NULL || vertex2 == NULL){
+    cout << "Verticies not found" << endl;
+    return;
+  }
+  //Setting values
+  cout << "What is the edge value?" << endl;
+  cin >> num;
+  cin.clear();
+  vertex1->mkEdge(vertex2->returnIndex(), val);
+  vertex2->mkEdge(vertex1->returnIndex(), val);
+}
+
+void delEdge(vtex** grid, int indexCount){
+  if(grid[1] == NULL || grid[0] == NULL){ //Two verticies check
+    cout << "Need two verticies" << endl;
+    return;
+  }
+}
