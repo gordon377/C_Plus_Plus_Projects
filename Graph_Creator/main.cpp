@@ -68,8 +68,8 @@ int main(){ //main function
 vtex* search(vtex** grid, char input, int indexCount){
   int a = 0;
   while(a < indexCount){
-    if(grid[a]->returnName() == input){
-      return grid[a];
+    if((grid[a])->returnName() == input){
+      return (grid[a]);
     }
     else{
       a++;
@@ -152,6 +152,8 @@ void dijkstra(vtex** grid, int indexCount){
   cin >> end;
   cin.clear();
 
+  //Pre-Processing
+
   vtex* beginning = search(grid, begin, indexCount);
   vtex* ending = search(grid, end, indexCount);
   if(beginning == NULL || ending == NULL){
@@ -196,7 +198,7 @@ void dijkstra(vtex** grid, int indexCount){
     while(count < tempinC-1){
       minDistance = lim;
       for(a = 0; a < tempinC; a++){
-	if(!history[a] && distance[a] < minDistance){
+	if(distance[a] < minDistance && !history[a]){
 	  minDistance = distance[a];
 	  nextPos = a;
 	}
@@ -204,7 +206,7 @@ void dijkstra(vtex** grid, int indexCount){
       history[nextPos] = 1;
       for(a = 0; a < tempinC; a++){
 	if(!history[a]){
-	  if(minDistance + weight[nextPos][a] < distance [a]){
+	  if(minDistance + weight[nextPos][a] < distance[a]){
 	    distance[a] = minDistance+weight[nextPos][a];
 	    pred[a] = nextPos;
 	  }
