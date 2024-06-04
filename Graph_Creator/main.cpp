@@ -243,8 +243,8 @@ void addEdge(vtex **grid, int indexCount){
   cin >> in2;
   cin.clear();
   //Pre-processing
-  vtex* vertex1 = search(grid, in1, inputCount);
-  vtex* vertex2 = search(grid, in2, inputCount);
+  vtex* vertex1 = search(grid, in1, indexCount);
+  vtex* vertex2 = search(grid, in2, indexCount);
   if(vertex1 == NULL || vertex2 == NULL){
     cout << "Verticies not found" << endl;
     return;
@@ -262,4 +262,24 @@ void delEdge(vtex** grid, int indexCount){
     cout << "Need two verticies" << endl;
     return;
   }
+  char in1;
+  char in2;
+  cout << "Enter one of the vectors that is connected to this edge" << endl;
+  cin >> in1;
+  cin.clear();
+  cout << "Enter the second vector" << endl;
+  cin >> in2;
+  cin.clear();
+  //Pre-processing
+  vtex* vertex1 = search(grid, in1, indexCount);
+  vtex* vertex2 = search(grid, in2, indexCount);
+  if(vertex1 == NULL || vertex2 == NULL){
+    cout << "Verticies not found" << endl;
+    return;
+  }
+  //Deletion
+  vertex1->mkEdge(vertex2->returnIndex(), 0);
+  vertex2->mkEdge(vertex1->returnIndex(), 0);
+  cout << "EDGE DELETION FINISHED" << endl;
 }
+
