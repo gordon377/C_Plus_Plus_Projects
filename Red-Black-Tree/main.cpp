@@ -551,55 +551,115 @@ void D3(Node* N, Node* S, Node* C, Node* D, Node* P, Node* &rootNode){
   else if(CHILD_TYPE(N) == 'R'){
     ROTATE_RIGHT(P, rootNode);
   }
+  P = FIND_PARENT(N);
   P->recolor();
   S->recolor();
-  if(D != NULL && D->returnRed() == true){
+  S = C;
+  //D = FIND_DISTANT_NEPHEW(N);
+  if(CHILD_TYPE(N) == 'L'){
+    if(S != NULL){
+      C = S->returnLeft();
+      D = S->returnRight();
+    }
+  }
+  else if(CHILD_TYPE(N) == 'R'){
+    if(S != NULL){
+      C = S->returnRight();
+      D = S->returnLeft();
+    }
+  }
+  //C = FIND_CLOSE_NEPHEW(N);
+  if(D != NULL && returnRed(D) == true){
     D6(N, S, C, D, P, rootNode);
   }
-  else if(C != NULL && C->returnRed() == true){
+  else if(C != NULL && returnRed(C) == true){
     D5(N, S, C, D, P, rootNode);
   }
-  else{ //What is C & D are NULL?
+  else{ //What if C & D are NULL?
     D4(N, S, C, D, P);
   }
   return;
 }
 
 void D4(Node* N, Node* S, Node* C, Node* D, Node* P){
-  if(S->returnRed() != P->returnRed()){
-    S->recolor();
-    P->recolor();
+  cout << "INNER ENTER D4" << endl;
+  if(returnRed(S) != returnRed(P)){
+    if(S != NULL && returnRed(S) == false){
+      S->recolor();
+    }
+    if(P != NULL && returnRed(P) == true){
+      P->recolor();
+    }
   }
   return;
 }
 
 void D5(Node* N, Node* & S, Node* & C, Node* & D, Node* & P, Node* &rootNode){
+  cout << "INNER ENTER D5" << endl;
   if(CHILD_TYPE(S) == 'L'){
     ROTATE_LEFT(S, rootNode);
   }
   else if(CHILD_TYPE(S) == 'R'){
     ROTATE_RIGHT(S, rootNode);
   }
-  if(S->returnRed() != C->returnRed()){
+  //if(returnRed(S) != returnRed(C)){
+  //S->recolor();
+  //C->recolor();
+  //}
+  cout << "SIBLING COLOR: " << endl;
+  if(S->returnRed() == true){
+    cout << "RED" << endl;
+  }
+  else{
+    cout << "BLACK" << endl;
+  }
+  cout << "SIBLING VALUE: " << S->returnValue() << endl;
+  cout << "CLOSE_NEPHEW_COLOR: " << endl;
+  if(C->returnRed() == true){
+    cout << "RED" << endl;
+  }
+  else{
+    cout << "BLACK" << endl;
+  }
+  cout << "CLOSE_NEPHEW_VALUE: " << C->returnValue() << endl;
+  if(S->returnRed() == false){
     S->recolor();
+  }
+  if(C->returnRed() == true){
     C->recolor();
   }
-  EVAL_RELATIONS(N, S, C, D, P);
+  //EVAL_RELATIONS(N, S, C, D, P);
+  D = S;
+  S = C;
   D6(N, S, C, D, P, rootNode);
   return;
 }
 
 void D6(Node* N, Node* S, Node* C, Node* D, Node* P, Node* &rootNode){
+  cout << "INNER ENTER D6" << endl;
   if(CHILD_TYPE(N) == 'L'){
     ROTATE_LEFT(P, rootNode);
   }
   else if(CHILD_TYPE(N) == 'R'){
     ROTATE_RIGHT(P, rootNode);
   }
-  if(S->returnRed() != P->returnRed()){
-    S->recolor();
-    P->recolor();
+  if(returnRed(S) != returnRed(P)){
+    if(S != NULL){
+      S->recolor();
+    }
+    if(P != NULL){
+      P->recolor();
+    }
   }
+  cout << "DISTANT NEPHEW COLOR" << endl;
+  if(D->returnRed() == true){
+    cout << "RED" << endl;
+  }
+  else{
+    cout << "BLACK" << endl;
+  }
+  cout << "DISTANT_NEPHEW_VALUE: " << D->returnValue() << endl;
+
   D->recolor(); //D is now set to black
   return;
 }
@@ -622,8 +682,19 @@ void DELETE_REARRANGE(Node* N, Node* & rootNode){ //I'm less deleting the data, 
   if(N->returnLeft() != NULL && N->returnRight() != NULL){ //Case 0 | N has two non-NULL children | Verified
     cout << "ENTER DELETION CASE 0" << endl;
     Node* tempNode = FIND_IN_ORDER_SUCCESSOR(N);
-    cout << tempNode->returnValue() << endl;
+    cout << "Successor value: " << tempNode->returnValue() << endl;
     N->makeValue(tempNode->returnValue());
+
+    Node* originalTemp = N;
+    N = tempNode;
+    P = FIND_PARENT(N);
+    S = FIND_SIBLING(N);
+    C = FIND_CLOSE_NEPHEW(N);
+    D = FIND_DISTANT_NEPHEW(N);
+    COMPLEX_CASE(N, S, C, D, P, rootNode);
+
+    N = originalTemp;
+
     if(tempNode->returnRight() == NULL && tempNode != N->returnRight()){
       tempNode->returnParent()->makeLeft(NULL);
       return;
@@ -635,6 +706,7 @@ void DELETE_REARRANGE(Node* N, Node* & rootNode){ //I'm less deleting the data, 
       tempNode->returnParent()->makeLeft(tempNode->returnRight());
       tempNode->returnRight()->makeParent(tempNode->returnParent());
     }
+
     return;
   }
   else if((N->returnLeft() != NULL && N->returnRight() == NULL) || (N->returnLeft() == NULL && N->returnRight() != NULL)){ //Case 1 | N has only one non-NULL child | Verified
@@ -713,7 +785,7 @@ void COMPLEX_CASE(Node* & N, Node* & S, Node* & C, Node* & D, Node* & P, Node* &
     D2(N, S, C, D, P, rootNode);
     return;
   }
-  else if(returnRed(S) == true){ //Case D3 | S is red, therfore P, C, & D are black
+  else if(returnRed(S) == true){ //Case D3 | S is red, therefore P, C, & D are black
     cout << "ENTER D3" << endl;
     D3(N, S, C, D, P, rootNode);
     return;
