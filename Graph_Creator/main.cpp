@@ -68,7 +68,7 @@ int main(){ //main function
 vtex* search(vtex** grid, char input, int indexCount){
   int a = 0;
   while(a < indexCount){
-    if(grid[a]->getName() == input){
+    if(grid[a]->returnName() == input){
       return grid[a];
     }
     else{
@@ -78,7 +78,7 @@ vtex* search(vtex** grid, char input, int indexCount){
   return NULL; //DNE
 }
 
-void print(vtex** gird, int indexCount){ //Check over
+void print(vtex** grid, int indexCount){ //Check over
   char matrix[21][21];
   for(int row = 0; row < 21; row++){    
     for(int column = 0; column < 21; column++){
@@ -122,10 +122,10 @@ void print(vtex** gird, int indexCount){ //Check over
   for(int row = 0; row < 21; row++){
     for(int column = 0; column < 21; column++){
       if(column != 0 && row != 0 && matrix[row][column] == 'T'){
-	cout << BLUE << matrix[row][column] << RESET << '\t';
+	cout << BLUE << matrix[row][column] << COLOR_OFF << '\t';
       }
       else if(column != 0 && row != 0 && matrix[row][column] == 'F'){
-	cout << RED << matrix[row][column] << RESET << '\t';
+	cout << RED << matrix[row][column] << COLOR_OFF << '\t';
       }
       else{
 	cout << matrix[row][column] << '\t';
@@ -153,8 +153,8 @@ void dijkstra(vtex** grid, int indexCount){
   cin.clear();
 
   vtex* beginning = search(grid, begin, indexCount);
-  vtex* end = search(grid, end, indexCount);
-  if(begin == NULL || end == NULL){
+  vtex* ending = search(grid, end, indexCount);
+  if(beginning == NULL || ending == NULL){
     cout << "Those verticies don't exist" << endl;
     return;
   }
@@ -171,9 +171,9 @@ void dijkstra(vtex** grid, int indexCount){
     int nextPos;
     int a;
     int b;
-    int startPos = begin->returnIndex();
-    int endPos = end->returnIndex();
-    for(a = 0; a < tempinC; a__){
+    int startPos = beginning->returnIndex();
+    int endPos = ending->returnIndex();
+    for(a = 0; a < tempinC; a++){
       for(b = 0; b < tempinC; b++){
 	if(grid[a]->returnEdge(b) == 0){
 	  weight[a][b] = lim;
@@ -193,20 +193,20 @@ void dijkstra(vtex** grid, int indexCount){
     count = 1;
     history[startPos] = 1;
     distance[startPos] = 0;
-    while(count < n-1){
+    while(count < tempinC-1){
       minDistance = lim;
       for(a = 0; a < tempinC; a++){
-	if(!history[a] && distance[a] < minDistace){
-	  minDistace = distance[a];
+	if(!history[a] && distance[a] < minDistance){
+	  minDistance = distance[a];
 	  nextPos = a;
 	}
       }
       history[nextPos] = 1;
       for(a = 0; a < tempinC; a++){
-	if(!history[i]){
-	  if(minDistance + weight[nextPos][i] < distance [i]){
+	if(!history[a]){
+	  if(minDistance + weight[nextPos][a] < distance [a]){
 	    distance[a] = minDistance+weight[nextPos][a];
-	    pred[i] = nextPos;
+	    pred[a] = nextPos;
 	  }
 	}
       }
@@ -216,12 +216,12 @@ void dijkstra(vtex** grid, int indexCount){
 
     for(a = 0; a < tempinC; a++){
       if(a == endPos){
-	cout << "Weight/Distance: " << distance[a]; << neld;
+	cout << "Weight/Distance: " << distance[a] << endl;
 	cout << "Path: " << grid[a]->returnName();
 	b = a;
 	while(b != startPos){
 	  b = pred[b];
-	  cout << " <<--" << grid[b]->returnName();
+	  cout << "<<--" << grid[b]->returnName();
 	}
       }
     }
@@ -253,8 +253,8 @@ void addEdge(vtex **grid, int indexCount){
   cout << "What is the edge value?" << endl;
   cin >> num;
   cin.clear();
-  vertex1->mkEdge(vertex2->returnIndex(), val);
-  vertex2->mkEdge(vertex1->returnIndex(), val);
+  vertex1->mkEdge(vertex2->returnIndex(), num);
+  vertex2->mkEdge(vertex1->returnIndex(), num);
 }
 
 void delEdge(vtex** grid, int indexCount){
@@ -286,14 +286,14 @@ void delEdge(vtex** grid, int indexCount){
 void addVtex(vtex** grid, int indexCount){
   char in;
   //Initilize new vertex
-  vtex* newVtex = new Vtex();
+  vtex* newVtex = new vtex();
   newVtex->mkIndex(indexCount);
   cout << "Enter a character for the new vertex" << endl;
   cin >> in;
   cin.clear();
   newVtex->mkName(in);
   grid[indexCount] = newVtex;
-  cout << "Vertex " << newVtex->returnName() << "added!" << endl; //Debugging purposes
+  cout << "Vertex " << newVtex->returnName() << " added!" << endl; //Debugging purposes
 }
 
 void delVtex(vtex** grid, int indexCount){
@@ -311,7 +311,7 @@ void delVtex(vtex** grid, int indexCount){
     return;
   }
   int index = vertex->returnIndex();
-  v->~vtex(); //Empty data
+  vertex->~vtex(); //Empty data
   cout << "DEBUG: Vertex Removed" << endl;
   //Stitching edge values per vertex
   for(int row = 0; row < indexCount; row++){
@@ -331,7 +331,7 @@ void delVtex(vtex** grid, int indexCount){
   grid[index] = NULL;
   //Shift latter elements
   while(index < indexCount){
-    if(index == IC - 1){
+    if(index == indexCount - 1){
       grid[index] = NULL;
       break;
     }

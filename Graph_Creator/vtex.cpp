@@ -24,27 +24,27 @@ vtex::vtex(){ //Constructor function
 
 //make functions
 
-void mkIndex(int inIndex){
+void vtex::mkIndex(int inIndex){
   index = inIndex;
 }
 
-void mkName(char inName){
+void vtex::mkName(char inName){
   name = inName;
 }
 
-void mkEdge(int dir, int value){
+void vtex::mkEdge(int dir, int value){
   edges[dir] = value;
 }
 
 //return functions
-int returnIndex(){
+int vtex::returnIndex(){
   return index;
 }
 
-char returnName(){
+char vtex::returnName(){
   return name;
 }
 
-int returnEdge(int dir){
+int vtex::returnEdge(int dir){
   return edges[dir];
 }
