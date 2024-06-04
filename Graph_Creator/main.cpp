@@ -10,17 +10,20 @@ using namespace std;
 
 //Function Prototypes
 
-
+vtex* search(vtex** grid, char input, int indexCount); //Finds & returns pointer to requested Vertex
+void print(vtex** grid, int indexCount); //Prints
+void dijkstra(vtex** grid, int indexCount); //Uses Dijkstra's algorithm to find the shortest/fastest/most efficient path
+void addEdge(vtex** grid, int indexCount); //Adds Edge
+void delEdge(vtex** grid, int indexCount); //Deletes Edge
+void addVtex(vtex** grid, int indexCount); //Adds a vertex
+void delVtex(vtex** grid, int indexCount); //Deletes a vertex
 
 //definitions (for convenience) | Colors
-
 //Resource used: https://gist.github.com/vratiu/9780109
 
 #define RED "\033[31m"
 #define BLUE "\033[34m"
 #define COLOR_OFF "\033[0m"
-
-
 
 int main(){ //main function
   vtex **grid = new vtex*[20];
@@ -33,7 +36,7 @@ int main(){ //main function
     cin.clear();
     cin.ignore(999, '\n');
     if(strcmp(input, "PRINT") == 0){
-      PRINT(grid, indexCount);
+      print(grid, indexCount);
     }
     else if(strcmp(input, "FASTESTPATH") == 0){
       dijkstra(grid, indexCount);
@@ -60,4 +63,8 @@ int main(){ //main function
       cout << "Invalid Input" << endl;
     }
   }
+}
+
+vtex* search(vtex** grid, char input, int indexCount){
+  
 }
